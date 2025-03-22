@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Payments</title>
+    <link rel="stylesheet" href="assets/css/style4.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Manage Payments</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Parent Name</th>
+                <th>Amount ($)</th>
+                <th>Status</th>
+                <th>Year</th>
+                <th>Due Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="paymentTable">
+            <!-- Payments will be loaded here by AJAX -->
+        </tbody>
+    </table>
+
+    <script>
+        // Load Payments using AJAX
+        function loadPayments() {
+            $.ajax({
+                url: "backend/fetch_payments.php",
+                type: "GET",
+                success: function(data) {
+                    $("#paymentTable").html(data);
+                }
+            });
+        }
+
+        // Mark Payment as Paid
+        function markAsPaid(paymentId) {
+            $.ajax({
+                url: "backend/update_payment.php",
+                type: "POST",
+                data: { payment_id: paymentId },
+                success: function(response) {
+                    alert(response);
+                    loadPayments(); // Reload the table
+                }
+            });
+        }
+
+        // Load payments when the page loads
+        $(document).ready(function() {
+            loadPayments();
+        });
+    </script>
+</body>
+</html>

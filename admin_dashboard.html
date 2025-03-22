@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="assets/css/style1.css">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Welcome Message at the Top -->
+        <section class="welcome-message">
+            <h1>Welcome to the Admin Dashboard</h1>
+        </section>
+
+        <!-- Tabs Section with Logo and Profile Icon -->
+        <nav class="tabs">
+            <div class="logo">
+                <img src="assets/images/logo1.jpg" alt="Carenest Logo" class="logo-img">
+            </div>
+            <ul>
+                <li><a href="register_child.html">Register Children</a></li>
+                <li><a href="register_staff.html">Register Staff</a></li>
+                <li><a href="manage_payments.html">Manage Payments</a></li>
+                <li><a href="#generate-reports">Generate Reports</a></li>
+                <li><a href="#send-message">Send Message</a></li>
+            </ul>
+            <div class="profile">
+                <a href="#profile">
+                    <img src="assets/images/profile.png" alt="Profile" class="profile-icon">
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content Section -->
+        <main class="main-content">
+            <section id="dashboard-overview">
+                <h3>Dashboard Overview</h3>
+                <div class="overview-cards">
+                    <div class="card">
+                        <h4>Registered Children</h4>
+                        <p>120</p>
+                    </div>
+                    <div class="card">
+                        <h4>Registered Parents</h4>
+                        <p>85</p>
+                    </div>
+                    <div class="card">
+                        <h4>Total Payments</h4>
+                        <p>$5,200</p>
+                    </div>
+                    <div class="card">
+                        <h4>Generated Reports</h4>
+                        <p>23</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="recent-activity">
+                <h3>Recent Activity</h3>
+                <ul class="activity-feed">
+                    <li>Registered new child: <strong>John Doe</strong></li>
+                    <li>New payment received: <strong>$300 from Jane Smith</strong></li>
+                    <li>Generated report for <strong>January 2025</strong></li>
+                </ul>
+            </section>
+        </main>
+
+        <!-- Footer Section -->
+        <footer>
+            <p>&copy; 2025 Carenest. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
