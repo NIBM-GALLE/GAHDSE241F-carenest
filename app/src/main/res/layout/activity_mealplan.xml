@@ -1,6 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@android:color/white">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Meal Plan Date -->
+        <TextView
+            android:id="@+id/mealPlanDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Meal Plan for: March 30, 2025"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#6200EE"
+            android:layout_gravity="center"
+            android:paddingBottom="12dp" />
+
+        <!-- Breakfast Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🍳 Breakfast"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:paddingTop="8dp"/>
+
+        <TextView
+            android:id="@+id/breakfastTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Pancakes with honey and fresh fruit"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:paddingStart="8dp"/>
+
+        <!-- Lunch Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🍛 Lunch"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:paddingTop="8dp"/>
+
+        <TextView
+            android:id="@+id/lunchTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Rice with grilled chicken and vegetables"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:paddingStart="8dp"/>
+
+        <!-- Snacks Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🍎 Snacks"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:paddingTop="8dp"/>
+
+        <TextView
+            android:id="@+id/snacksTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Yogurt with granola and banana slices"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:paddingStart="8dp"/>
+
+    </LinearLayout>
+
+</ScrollView>
