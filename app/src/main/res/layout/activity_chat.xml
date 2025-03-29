@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#f0f0f0">
 
     <!-- Chat messages list -->
     <androidx.recyclerview.widget.RecyclerView
@@ -10,16 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="16dp"
-        android:layout_marginBottom="8dp"
-        android:scrollbars="vertical"/>
+        android:padding="8dp"
+        android:layout_marginBottom="12dp"
+        android:scrollbars="vertical"
+        android:background="@android:color/white"
+        android:elevation="2dp" />
 
     <!-- Message input field -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="@android:color/white"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_vertical"
+        android:elevation="2dp"
+        android:cornerRadius="10dp">
 
         <EditText
             android:id="@+id/messageEditText"
@@ -28,23 +39,26 @@
             android:layout_weight="1"
             android:hint="Type a message"
             android:inputType="text"
-            android:padding="8dp"/>
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:background="@drawable/rounded_edittext"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center_vertical" />
 
         <!-- Send Button -->
         <Button
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send"/>
+            android:text="Send"
+            android:textSize="16sp"
+            android:textColor="@color/dark_blue"
+            android:background="@drawable/rounded_button"
+            android:layout_gravity="center_vertical" />
 
-        <!-- Attach Button (optional for images) -->
-        <Button
-            android:id="@+id/attachButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Attach"
-            android:layout_marginStart="8dp"/>
+
     </LinearLayout>
 
 </LinearLayout>
+
 
