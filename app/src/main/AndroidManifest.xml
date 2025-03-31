@@ -79,6 +79,17 @@
             </intent-filter>
         </activity>
 
+        <!-- Profile Page Activity -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="true"
+            android:label="Profile Page">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
 
     </application>
 
