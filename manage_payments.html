@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Payment</title>
+    <link rel="stylesheet" href="assets/css/style5.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Add Payment</h2>
+
+    <!-- Success and Error Alerts -->
+    <?php if (isset($_GET['success'])): ?>
+        <div class="alert alert-success">
+            ✅ <?= htmlspecialchars($_GET['success']) ?>
+        </div>
+    <?php elseif (isset($_GET['error'])): ?>
+        <div class="alert alert-error">
+            ❌ <?= htmlspecialchars($_GET['error']) ?>
+        </div>
+    <?php endif; ?>
+
+    <form action="maage_payments.php" method="POST">
+        <label for="parent_id">Parent ID:</label>
+        <input type="number" id="parent_id" name="parent_id" required>
+
+        <label for="amount">Amount (USD):</label>
+        <input type="number" id="amount" name="amount" step="0.01" required>
+
+        <label for="status">Payment Status:</label>
+        <select id="status" name="status" required>
+            <option value="Pending">Pending</option>
+            <option value="Paid">Paid</option>
+            <option value="Overdue">Overdue</option>
+        </select>
+
+        <label for="month">Payment Year:</label>
+        <input type="number" id="month" name="month" min="2020" max="2099" required>
+
+        <label for="payment_date">Payment Date:</label>
+        <input type="date" id="payment_date" name="payment_date">
+
+        <button type="submit">Submit Payment</button>
+    </form>
+</div>
+
+</body>
+</html>
