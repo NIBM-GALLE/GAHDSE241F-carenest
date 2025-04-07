@@ -27,13 +27,14 @@ A complete web and mobile-based system for managing daycare operations including
 ## 📷 Screenshots
 
 ### 🔐 Admin Dashboard
-![Admin Dashboard](screenshots\Admin_Dashboard.jpg)
+![Admin Dashboard](GAHDSE241F-carenest/screenshots
+/Admin_Dashboard.jpg)
 
 ### 📝 Staff Dashboard
-![Staff Dashboard](screenshots\Staff_Dashboard.jpg)
+![Staff Dashboard](screenshots/Staff_Dashboard.jpg)
 
 ### 💵 Payment Page
-![ Payment Page](screenshots\Manage_payments.jpg)
+![ Payment Page](screenshots/Manage_payments.jpg)
 
 ---
 
