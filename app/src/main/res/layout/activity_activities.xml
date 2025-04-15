@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F1F6F9"
+    android:padding="16dp">
+
+    <!-- Page Header -->
+    <TextView
+        android:id="@+id/activitiesTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="👶 My Child's Activities"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:padding="16dp"
+        android:gravity="center"
+        android:textColor="#2B2D42"
+        />
+
+    <!-- Scrollable Activities List -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="12dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/activitiesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Activity Card (Single example, repeat it dynamically) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:elevation="6dp"
+               >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/activityTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎨 Art Time"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#2B2D42" />
+
+                    <TextView
+                        android:id="@+id/activityDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Today your child created a beautiful drawing using crayons!"
+                        android:textSize="15sp"
+                        android:layout_marginTop="4dp"
+                        android:textColor="#4D4D4D" />
+
+                    <TextView
+                        android:id="@+id/activityDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="14 April 2025"
+                        android:textSize="13sp"
+                        android:layout_marginTop="8dp"
+                        android:textColor="#7D7D7D" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Add more CardViews dynamically here as needed -->
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+
+
+
