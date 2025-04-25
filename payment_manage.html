@@ -1,4 +1,4 @@
-ss<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,17 +10,7 @@ ss<!DOCTYPE html>
 <div class="container">
     <h2>Add Payment</h2>
 
-    <!-- Success and Error Alerts -->
-    <?php if (isset($_GET['success'])): ?>
-        <div class="alert alert-success">
-            ✅ <?= htmlspecialchars($_GET['success']) ?>
-        </div>
-    <?php elseif (isset($_GET['error'])): ?>
-        <div class="alert alert-error">
-            ❌ <?= htmlspecialchars($_GET['error']) ?>
-        </div>
-    <?php endif; ?>
-
+    
     <form action="http://localhost/carenest/manage_payments.php" method="POST">
         <label for="parent_id">Parent ID:</label>
         <input type="number" id="parent_id" name="parent_id" required>
