@@ -3,7 +3,7 @@ include 'db_connection.php'; // Make sure this file contains the $conn variable 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $parent_id = $_POST['parent_id'];
-    $amount = $_POST['gh'];
+    $amount = $_POST['amount'];
     $status = $_POST['status'];
     $month = $_POST['month'];
     $payment_date = !empty($_POST['payment_date']) ? $_POST['payment_date'] : null;
