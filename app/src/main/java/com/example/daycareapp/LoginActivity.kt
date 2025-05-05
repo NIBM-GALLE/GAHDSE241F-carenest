@@ -41,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginUser(username: String, password: String) {
-        val url = "http://10.0.2.2/carenest_daycare/GAHDSE241F-carenest/backend/login.php"  // Use your real IP for real device
+        val url = "http://10.0.2.2/api/login.php"  // Use your real IP for real device
         val queue = Volley.newRequestQueue(this)
 
         val stringRequest = object : StringRequest(Request.Method.POST, url,
