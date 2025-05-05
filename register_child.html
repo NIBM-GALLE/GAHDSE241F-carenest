@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,65 +9,66 @@
 </head>
 <body>
 
-    <div class="container">
-        <h2>Register a Child</h2>
-        <form action="http://localhost/carenest/register_child.php" method="POST">
-            
-            <h3>Child Information</h3>
-            <label for="child_name">Child's Name:</label>
-            <input type="text" id="child_name" name="child_name" required>
+<div class="container">
+    <h2>Register a Child</h2>
+    <form action="http://localhost/carenest/register_child.php" method="POST">
+        
+        <h3>Child Information</h3>
+        <label for="child_name">Child's Name:</label>
+        <input type="text" id="child_name" name="child_name" required>
 
-            <label for="dob">Date of Birth:</label>
-            <input type="date" id="dob" name="dob" required>
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
 
-            <label for="allergies">Allergies:</label>
-            <input type="text" id="allergies" name="allergies">
+        <label for="allergies">Allergies:</label>
+        <input type="text" id="allergies" name="allergies">
 
-            <label for="medications">Medications:</label>
-            <input type="text" id="medications" name="medications">
+        <label for="medications">Medications:</label>
+        <input type="text" id="medications" name="medications">
 
-            <label for="medical_conditions">Medical Conditions:</label>
-            <input type="text" id="medical_conditions" name="medical_conditions">
+        <label for="medical_conditions">Medical Conditions:</label>
+        <input type="text" id="medical_conditions" name="medical_conditions">
 
-            <h3>Parent Information</h3>
-            <label for="parent_name">Parent's Name:</label>
-            <input type="text" id="parent_name" name="parent_name" required>
+        <h3>Parent Information</h3>
+        <label for="parent_name">Parent's Name:</label>
+        <input type="text" id="parent_name" name="parent_name" required>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
 
-            <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" required>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" required>
 
-            <label for="emergency_contact_name">Emergency Contact Name:</label>
-            <input type="text" id="emergency_contact_name" name="emergency_contact_name" required>
+        <label for="emergency_contact_name">Emergency Contact Name:</label>
+        <input type="text" id="emergency_contact_name" name="emergency_contact_name" required>
 
-            <label for="emergency_contact_phone">Emergency Contact Phone:</label>
-            <input type="text" id="emergency_contact_phone" name="emergency_contact_phone" required>
+        <label for="emergency_contact_phone">Emergency Contact Phone:</label>
+        <input type="text" id="emergency_contact_phone" name="emergency_contact_phone" required>
 
-            <h3>Assign Staff</h3>
-            <label for="staff_id">Assign Staff:</label>
-            <select id="staff_id" name="staff_id" required>
-                <option value="">Select Staff</option>
-                <?php
-                // Fetch and display staff members from the database
-                $staffQuery = "SELECT id, name FROM users WHERE role = 'staff'";
-                $staffResult = $conn->query($staffQuery);
+        <h3>Assign Staff</h3>
+        <label for="staff_id">Assign Staff:</label>
+        <select id="staff_id" name="staff_id" required>
+            <option value="">Select Staff</option>
+            <?php
+            // Fetch and display staff members from the database
+            $staffQuery = "SELECT id, name FROM users WHERE role = 'staff'";
+            $staffResult = $conn->query($staffQuery);
 
-                if ($staffResult->num_rows > 0) {
-                    while ($staffRow = $staffResult->fetch_assoc()) {
-                        echo "<option value='" . $staffRow['id'] . "'>" . $staffRow['name'] . "</option>";
-                    }
-                } else {
-                    echo "<option value=''>No staff available</option>";
+            if ($staffResult->num_rows > 0) {
+                while ($staffRow = $staffResult->fetch_assoc()) {
+                    echo "<option value='" . $staffRow['id'] . "'>" . $staffRow['name'] . "</option>";
                 }
-                ?>
-            </select>
+            } else {
+                echo "<option value=''>No staff available</option>";
+            }
+            ?>
+        </select>
 
-            <!-- Submit button added here -->
-            <button type="submit">Register Child</button>
-        </form>
-    </div>
+        <!-- Submit button added here -->
+        <button type="submit">Register Child</button>
+    </form>
+</div>
+
 
 </body>
-</html>
+</html>                         
