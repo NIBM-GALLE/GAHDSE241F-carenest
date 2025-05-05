@@ -36,7 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Insert Parent
         if (!empty($parent_name)) {
             $username = strtolower(str_replace(' ', '', $parent_name)) . rand(100, 999);
-            $password = password_hash("default123", PASSWORD_DEFAULT); // Default password
+            $password = "default" . rand(1000, 9999); // Generate a random password
+            // Insert the parent without hashing the password
             $insertParentQuery = "INSERT INTO users (name, email, phone, role, username, password) VALUES (?, ?, ?, 'parent', ?, ?)";
             $stmt = $conn->prepare($insertParentQuery);
             $stmt->bind_param("sssss", $parent_name, $email, $phone, $username, $password);
@@ -59,7 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_param("ssissssss", $child_name, $dob, $parent_id, $staff_id, $allergies, $medications, $medical_conditions, $emergency_contact_name, $emergency_contact_phone);
 
         if ($stmt->execute()) {
-            echo "Child registered successfully!";
+            // After registration, show the username and password for mobile access
+            echo "<h3>Registration Successful!</h3>";
+            echo "<p>Username for mobile access: <strong>" . htmlspecialchars($username) . "</strong></p>";
+            echo "<p>Password for mobile access: <strong>" . htmlspecialchars($password) . "</strong></p>";
+            echo "<p>Please use these credentials to log in to the mobile app.</p>";
         } else {
             echo "Error: " . $conn->error;
         }
