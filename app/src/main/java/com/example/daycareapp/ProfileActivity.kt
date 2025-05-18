@@ -21,6 +21,8 @@ class ProfileActivity : AppCompatActivity() {
 
     private val PICK_IMAGE_REQUEST = 1
     private var imageUri: Uri? = null
+    private var selectedImageUri: Uri? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,12 @@ class ProfileActivity : AppCompatActivity() {
             intent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
         }
+
+        val sharedPref = getSharedPreferences("ProfilePref", MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putString("profile_image_uri", selectedImageUri.toString())
+        editor.apply()
+
 
         // Logout Button Click Listener
         btnLogout.setOnClickListener {

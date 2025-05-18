@@ -18,10 +18,20 @@ class DashboardActivity : AppCompatActivity() {
         val chatCard: CardView = findViewById(R.id.ChatCard)
         val activityCard: CardView = findViewById(R.id.ActivityCard)
 
+
         // Back button functionality
         backIcon.setOnClickListener {
             finish() // Close current activity
         }
+
+        val sharedPref = getSharedPreferences("ProfilePref", MODE_PRIVATE)
+        val imageUriString = sharedPref.getString("profile_image_uri", null)
+
+        if (imageUriString != null) {
+            val imageUri = android.net.Uri.parse(imageUriString)
+            profileImageView.setImageURI(imageUri)
+        }
+
 
         // Navigate to Profile Page
         profileImageView.setOnClickListener {

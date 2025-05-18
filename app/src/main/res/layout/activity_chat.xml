@@ -1,64 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="16dp"
-    android:background="@color/white">
+    tools:context=".ChatActivity">
 
-    <!-- Chat messages list -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="8dp"
-        android:layout_marginBottom="12dp"
-        android:scrollbars="vertical"
-        android:background="@android:color/white"
-        android:elevation="2dp" />
-
-    <!-- Message input field -->
+    <!-- Header with Back Icon -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp"
-        android:background="@android:color/white"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:gravity="center_vertical"
-        android:elevation="2dp">
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/backIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/back"
+            android:contentDescription="Back Button"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- Chat Messages -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerChat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="4dp"
+        android:clipToPadding="false" />
+
+    <!-- Message Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="8dp">
 
         <EditText
-            android:id="@+id/messageEditText"
+            android:id="@+id/editMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Type a message"
-            android:inputType="text"
-            android:padding="12dp"
-            android:textSize="16sp"
-            android:background="@drawable/rounded_edittext"
-            android:layout_marginEnd="8dp"
-            android:layout_gravity="center_vertical" />
+            android:background="@drawable/bg_edittext"
+            android:padding="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
-        <!-- Send Button -->
-        <Button
-            android:id="@+id/sendButton"
+        <ImageButton
+            android:id="@+id/btnSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/dark_blue"
-            android:background="@drawable/rounded_button"
-            android:layout_gravity="center_vertical" />
-
-
+            android:src="@android:drawable/ic_menu_send"
+            android:contentDescription="Send"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="10dp"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 
 </LinearLayout>
+
 
 

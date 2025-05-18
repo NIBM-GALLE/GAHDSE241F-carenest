@@ -2,6 +2,7 @@ package com.example.daycareapp
 
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
 class MealPlanActivity : AppCompatActivity() {
@@ -9,6 +10,13 @@ class MealPlanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mealplan)
+
+        val backIcon: ImageView = findViewById(R.id.backIcon)
+        backIcon.setOnClickListener {
+            finish() // This will go back to the previous screen
+        }
+
+
 
         // Get references to TextViews
         val mealPlanDateTextView: TextView = findViewById(R.id.mealPlanDateTextView)
