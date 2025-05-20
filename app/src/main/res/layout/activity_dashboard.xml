@@ -68,7 +68,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="16dp"
-                android:src="@drawable/img_3"
+                android:src="@drawable/profile"
                 android:contentDescription="Profile"
                 android:clickable="true"
                 android:focusable="true" />

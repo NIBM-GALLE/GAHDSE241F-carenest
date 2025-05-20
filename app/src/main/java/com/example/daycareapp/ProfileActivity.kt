@@ -6,76 +6,82 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
 
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var profileImage: ImageView
-    private lateinit var btnChangeProfile: Button
-    private lateinit var btnLogout: Button
+    private lateinit var cameraIcon: ImageView
+    private lateinit var backIcon: ImageView
+    private lateinit var logoutText: TextView
+    private lateinit var editProfileBtn: Button
 
-    private val PICK_IMAGE_REQUEST = 1
+    private val PICK_IMAGE_REQUEST = 100
     private var imageUri: Uri? = null
-    private var selectedImageUri: Uri? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+        // Initialize views
         profileImage = findViewById(R.id.profileImage)
-        btnChangeProfile = findViewById(R.id.btn_change_profile)
-        btnLogout = findViewById(R.id.btn_logout)
-        val backIcon: ImageView = findViewById(R.id.backIcon)
+        cameraIcon = findViewById(R.id.camera)
+        backIcon = findViewById(R.id.backIcon)
+        logoutText = findViewById(R.id.tv_logout)
+        editProfileBtn = findViewById(R.id.btn_edit_profile)
 
-        // Back button click listener
+        // Back icon to navigate to Dashboard
         backIcon.setOnClickListener {
-            finish() // Go back to previous screen
+            val intent = Intent(this, DashboardActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
-        // Change Profile Picture
-        btnChangeProfile.setOnClickListener {
-            val intent = Intent()
+        // Open gallery when clicking the camera icon
+        cameraIcon.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             intent.type = "image/*"
-            intent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
+            startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        val sharedPref = getSharedPreferences("ProfilePref", MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putString("profile_image_uri", selectedImageUri.toString())
-        editor.apply()
-
-
-        // Logout Button Click Listener
-        btnLogout.setOnClickListener {
+        // Logout and go to Landing/Login page
+        logoutText.setOnClickListener {
             Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show()
-
-            // Navigate back to login screen
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, LandingPageActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-            finish() // Close current activity
+            finish()
+        }
+
+        // Edit profile button navigates to edit screen
+        editProfileBtn.setOnClickListener {
+            val intent = Intent(this, EditProfileActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    // Handle the result when the user selects an image
+    // Handle selected image from gallery
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data
-
             try {
                 val bitmap: Bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
                 profileImage.setImageBitmap(bitmap)
+
+                // Optionally, save image URI to shared preferences
+                val sharedPref = getSharedPreferences("ProfilePref", MODE_PRIVATE)
+                with(sharedPref.edit()) {
+                    putString("profile_image_uri", imageUri.toString())
+                    apply()
+                }
+
             } catch (e: IOException) {
                 e.printStackTrace()
+                Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show()
             }
         }
     }
