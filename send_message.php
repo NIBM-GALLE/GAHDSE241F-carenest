@@ -3,7 +3,7 @@ session_start();
 include 'db_connection.php';
 
 $sender_id = $_SESSION['user_id'] ?? null;
-$sender_role = $_SESSION['role'] ?? null;  // corrected here
+$sender_role = $_SESSION['role'] ?? null; 
 
 if (!$sender_id || !$sender_role) {
     die("Unauthorized access.");
@@ -43,10 +43,10 @@ elseif ($message_type === "group") {
         die("Select at least one group role.");
     }
     $receiver_all = 1;
-    $group_key = implode("_", $roles); // just for reference, optional
+    $group_key = implode("_", $roles); 
     foreach ($roles as $role) {
         if (!in_array($role, ['admin','staff','parent'])) {
-            continue; // skip invalid role
+            continue; 
         }
         $stmt = $conn->prepare("INSERT INTO chat (sender_id, sender_role, receiver_role, receiver_all, message, timestamp, target_group) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ississs", $sender_id, $sender_role, $role, $receiver_all, $message, $timestamp, $group_key);

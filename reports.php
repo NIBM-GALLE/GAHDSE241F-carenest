@@ -4,7 +4,6 @@ header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? '';
 
-// 1. Monthly Summary Report
 if ($action === 'monthly_summary' && isset($_GET['month'])) {
     $month = $_GET['month'];
 
@@ -25,7 +24,6 @@ if ($action === 'monthly_summary' && isset($_GET['month'])) {
     exit();
 }
 
-// 2. Parent Payment History
 if ($action === 'parent_history' && isset($_GET['parent_id'])) {
     $parentId = intval($_GET['parent_id']);
     $stmt = $conn->prepare("
@@ -45,7 +43,6 @@ if ($action === 'parent_history' && isset($_GET['parent_id'])) {
     exit();
 }
 
-// 3. Overdue List
 if ($action === 'overdue_list') {
     $res = $conn->query("
         SELECT u.name AS parent_name, p.month, p.amount, p.due_date

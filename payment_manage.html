@@ -9,13 +9,11 @@
   <div class="container">
     <h2>Payment Management</h2>
 
-    <!-- Parent Filter Dropdown -->
     <label for="parentFilter">Filter by Parent:</label>
     <select id="parentFilter">
       <option value="">-- All Parents --</option>
     </select>
 
-    <!-- Generate & Delete Buttons -->
     <button class="btn-generate" onclick="generatePayments()">
       Generate Payments for This Month
     </button>
@@ -23,7 +21,6 @@
       Delete All Payments
     </button>
 
-    <!-- Payments Table -->
     <table id="paymentTable">
       <thead>
         <tr>
@@ -37,13 +34,13 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Filled by JavaScript -->
+    
       </tbody>
     </table>
   </div>
 
   <script>
-    // 1) Populate the parent dropdown
+    
     async function fetchParents(selectedId = '') {
       const res = await fetch('manage_payments.php?action=parents');
       let data;
@@ -68,7 +65,7 @@
       });
     }
 
-    // 2) Fetch payments (all or filtered by a single parent)
+    
     async function fetchPayments() {
       const parentId = document.getElementById('parentFilter').value;
       const url = parentId 
@@ -105,22 +102,20 @@
       });
     }
 
-    // 3) Mark a specific payment as Paid
     async function markPaid(id) {
       await fetch(`manage_payments.php?action=mark_paid&id=${id}`);
       fetchPayments();
     }
 
-    // 4) Generate new month’s payments & reset filter to “All”
     async function generatePayments() {
       if (!confirm('Mark overdue payments and generate new month for all parents?')) return;
       await fetch('manage_payments.php?action=generate_month');
-      await fetchParents();      // Re-populate dropdown
-      document.getElementById('parentFilter').value = ''; // Reset to “All”
+      await fetchParents();     
+      document.getElementById('parentFilter').value = ''; 
       fetchPayments();
     }
 
-    // 5) Delete all payment records & reset filter
+  
     async function clearAllPayments() {
       if (!confirm('This will delete ALL payment records. Continue?')) return;
       await fetch('manage_payments.php?action=delete_all');
@@ -129,10 +124,9 @@
       fetchPayments();
     }
 
-    // 6) On dropdown change, filter payments
+  
     document.getElementById('parentFilter').addEventListener('change', fetchPayments);
 
-    // 7) Initial load
     fetchParents().then(fetchPayments);
   </script>
 </body>

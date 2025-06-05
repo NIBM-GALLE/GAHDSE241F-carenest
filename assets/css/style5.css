@@ -1,4 +1,4 @@
-/* Reset some default browser styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -11,7 +11,7 @@ body {
     padding: 30px;
 }
 
-/* Container styling */
+
 .container {
     width: 100%;
     max-width: 420px;
@@ -22,14 +22,14 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Heading */
+
 h2 {
     text-align: center;
     color: #333;
     margin-bottom: 20px;
 }
 
-/* Labels and Inputs */
+
 label {
     font-weight: 600;
     margin-top: 15px;
@@ -60,7 +60,7 @@ select:focus {
     outline: none;
 }
 
-/* Submit Button */
+
 button {
     width: 100%;
     padding: 12px;
@@ -77,7 +77,7 @@ button:hover {
     background-color: #218838;
 }
 
-/* Alert / Message styling if needed */
+
 .alert {
     padding: 12px;
     margin-bottom: 20px;

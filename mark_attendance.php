@@ -2,12 +2,11 @@
 session_start();
 include 'db_connection.php';
 
-// Check DB connection exists
 if (!$conn) {
     die("Database connection failed.");
 }
 
-// Check if user is logged in as staff
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'staff') {
     header("Location: login.html?error=" . urlencode("Unauthorized access."));
     exit();
@@ -15,8 +14,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'staff') {
 
 $staff_id = $_SESSION['user_id'];
 
-// Fetch assigned children
-$children = []; // Initialize here to prevent undefined error
+
+$children = [];
 
 $query = "SELECT * FROM children WHERE assigned_staff_id = ?";
 if ($stmt = $conn->prepare($query)) {

@@ -1,11 +1,9 @@
 <?php
-// manage_payments.php
 include 'db_connection.php';
 header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? '';
 
-// ———— 1) Return list of parent users ————
 if ($action === 'parents') {
     $sql = "SELECT id, name FROM users WHERE role = 'parent' ORDER BY name";
     $result = $conn->query($sql);
@@ -21,7 +19,6 @@ if ($action === 'parents') {
     exit();
 }
 
-// ———— 2) Return all or filtered payments ————
 if ($action === 'payments') {
     $parentId = intval($_GET['parent_id'] ?? 0);
     if ($parentId > 0) {
@@ -53,7 +50,6 @@ if ($action === 'payments') {
     exit();
 }
 
-// ———— 3) Mark a payment as Paid ————
 if ($action === 'mark_paid' && isset($_GET['id'])) {
     $id = intval($_GET['id']);
     $stmt = $conn->prepare("UPDATE payments SET status = 'Paid' WHERE id = ?");
@@ -63,20 +59,17 @@ if ($action === 'mark_paid' && isset($_GET['id'])) {
     exit();
 }
 
-// ———— 4) Generate this month’s payments & mark Overdue ————
 if ($action === 'generate_month') {
-    // 4a) Mark “Pending” payments as “Overdue” if past due_date
+
     $conn->query("
         UPDATE payments 
         SET status = 'Overdue' 
         WHERE status = 'Pending' AND due_date < CURDATE()
     ");
 
-    // 4b) Insert new “Pending” payment for each parent if not exists for this month
     $month   = date('Y-m');
-    $dueDate = date('Y-m-t');  // Last day of current month
-    $amount  = 100.00;         // change as needed
-
+    $dueDate = date('Y-m-t');  
+    $amount  = 100.00;        
     $stmt = $conn->prepare("
         INSERT INTO payments (parent_id, amount, status, month, payment_date, due_date)
         SELECT u.id, ?, 'Pending', ?, CURDATE(), ?
@@ -94,7 +87,6 @@ if ($action === 'generate_month') {
     exit();
 }
 
-// ———— 5) Delete all payments ————
 if ($action === 'delete_all') {
     $conn->query("TRUNCATE TABLE payments");
     echo json_encode(['success' => true]);

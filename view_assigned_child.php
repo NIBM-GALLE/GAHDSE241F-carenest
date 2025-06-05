@@ -2,7 +2,6 @@
 session_start();
 include 'db_connection.php';
 
-// Check if logged-in user is staff
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'staff') {
     header("Location: login.html?error=" . urlencode("Unauthorized access."));
     exit();
@@ -24,6 +23,5 @@ while ($row = $result->fetch_assoc()) {
 $stmt->close();
 $conn->close();
 
-// Display the children using HTML
 include 'view_assigned_child.html';
 ?>

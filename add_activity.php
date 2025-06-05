@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connection.php'; // Your DB connection
+include 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $staff_id = $_SESSION['user_id'] ?? null;
@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $destination = $upload_dir . $new_filename;
 
         if (move_uploaded_file($tmp_path, $destination)) {
-            // Insert into DB
             $sql = "INSERT INTO activities (child_id, staff_id, description, date, image_url) VALUES (?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param('iisss', $child_id, $staff_id, $description, $date, $destination);

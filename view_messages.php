@@ -9,7 +9,7 @@ if (!$user_id || !$user_role) {
     die("Unauthorized access.");
 }
 
-// Fetch messages relevant to the user
+
 $sql = "
 SELECT 
     chat.message, chat.timestamp, chat.sender_id, u.name AS sender_name, u.role AS sender_role
