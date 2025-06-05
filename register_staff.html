@@ -10,12 +10,25 @@
         function showAlert(message, type) {
             alert(message);  // Simple alert pop-up
         }
+
+        // Show messages from URL parameters
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            const error = urlParams.get('error');
+
+            if (success) {
+                showAlert("Registration Successful!\n" + decodeURIComponent(success), "success");
+            } else if (error) {
+                showAlert("Error: " + decodeURIComponent(error), "error");
+            }
+        };
     </script>
 </head>
 <body>
     <div class="container">
         <h2>Register Staff</h2>
-        <form action="http://localhost/carenest/register_staff.php" method="POST">
+        <form action="http://localhost/carenest_daycare/GAHDSE241F-carenest/register_staff.php" method="POST">
             <label for="name">Full Name:</label>
             <input type="text" id="name" name="name" required>
 
@@ -39,20 +52,6 @@
 
             <button type="submit">Register Staff</button>
         </form>
-
-        <!-- Display pop-up messages based on the URL parameters -->
-        <script>
-            // Check if there are success or error messages in the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const success = urlParams.get('success');
-            const error = urlParams.get('error');
-
-            if (success) {
-                showAlert("Registration Successful!", "success");
-            } else if (error) {
-                showAlert("Error: " + decodeURIComponent(error), "error");
-            }
-        </script>
     </div>
 </body>
 </html>

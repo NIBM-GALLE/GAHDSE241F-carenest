@@ -1,76 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="assets/css/style1.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="assets/css/style1.css" />
 </head>
 <body>
-    <div class="container">
+  <div class="container">
+    <!-- Top Welcome -->
+    <section class="welcome-message">
+      <h1>Welcome to the Admin Dashboard</h1>
+    </section>
 
-        <!-- Welcome Message at the Top -->
-        <section class="welcome-message">
-            <h1>Welcome to the Admin Dashboard</h1>
-        </section>
+    <!-- Navigation Tabs -->
+    <nav class="tabs">
+      <div class="logo">
+        <img src="assets/images/logo1.jpg" alt="Logo" class="logo-img"/>
+      </div>
+      <ul>
+        <li><a href="register_child_form.php">Register Children</a></li>
+        <li><a href="register_staff.html">Register Staff</a></li>
+        <li><a href="payment_manage.html">Manage Payments</a></li>
+        <li><a href="reports.html">Generate Reports</a></li>
+        <li><a href="#">Send Message</a></li>
+      </ul>
+      <div class="profile">
+        <a href="profile.php">
+          <img src="assets/images/profile.png" alt="Profile" class="profile-icon"/>
+        </a>
+      </div>
+    </nav>
 
-        <!-- Tabs Section with Logo and Profile Icon -->
-        <nav class="tabs">
-            <div class="logo">
-                <img src="assets/images/logo1.jpg" alt="Carenest Logo" class="logo-img">
-            </div>
-            <ul>
-                <li><a href="http://localhost/carenest_daycare/GAHDSE241F-carenest/register_child_form.php">Register Children</a></li>
-                <li><a href="register_staff.html">Register Staff</a></li>
-                <li><a href="payment_manage.html">Manage Payments</a></li>
-                <li><a href="#generate-reports">Generate Reports</a></li>
-                <li><a href="#send-message">Send Message</a></li>
-            </ul>
-            <div class="profile">
-                <a href="#profile">
-                    <img src="assets/images/profile.png" alt="Profile" class="profile-icon">
-                </a>
-            </div>
-        </nav>
+    <!-- Main Dashboard Overview -->
+    <main class="main-content">
+      <section id="dashboard-overview">
+        <h3>Dashboard Overview</h3>
+        <div class="overview-cards">
+          <div class="card">
+            <h4>Registered Children</h4>
+            <p id="childCount">Loading...</p>
+          </div>
+          <div class="card">
+            <h4>Registered Parents</h4>
+            <p id="parentCount">Loading...</p>
+          </div>
+          <div class="card">
+            <h4>Total Payments</h4>
+            <p id="paymentTotal">Loading...</p>
+          </div>
+        </div>
+      </section>
+    </main>
 
-        <!-- Main Content Section -->
-        <main class="main-content">
-            <section id="dashboard-overview">
-                <h3>Dashboard Overview</h3>
-                <div class="overview-cards">
-                    <div class="card">
-                        <h4>Registered Children</h4>
-                        <p>120</p>
-                    </div>
-                    <div class="card">
-                        <h4>Registered Parents</h4>
-                        <p>85</p>
-                    </div>
-                    <div class="card">
-                        <h4>Total Payments</h4>
-                        <p>$5,200</p>
-                    </div>
-                    <div class="card">
-                        <h4>Generated Reports</h4>
-                        <p>23</p>
-                    </div>
-                </div>
-            </section>
+    <footer>
+      <p>&copy; 2025 Carenest. All rights reserved.</p>
+    </footer>
+  </div>
 
-            <section id="recent-activity">
-                <h3>Recent Activity</h3>
-                <ul class="activity-feed">
-                    <li>Registered new child: <strong>John Doe</strong></li>
-                    <li>New payment received: <strong>$300 from Jane Smith</strong></li>
-                    <li>Generated report for <strong>January 2025</strong></li>
-                </ul>
-            </section>
-        </main>
+  <!-- Dashboard JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('admin_dashboard_data.php');
+        const data = await res.json();
 
-        <!-- Footer Section -->
-        <footer>
-            <p>&copy; 2025 Carenest. All rights reserved.</p>
-        </footer>
-    </div>
+        document.getElementById("childCount").textContent = data.children ?? "0";
+        document.getElementById("parentCount").textContent = data.parents ?? "0";
+        document.getElementById("paymentTotal").textContent = `$${data.payments ?? "0.00"}`;
+      } catch (e) {
+        console.error("Error loading dashboard:", e);
+        document.getElementById("childCount").textContent = "Error";
+        document.getElementById("parentCount").textContent = "Error";
+        document.getElementById("paymentTotal").textContent = "Error";
+      }
+    });
+  </script>
 </body>
 </html>

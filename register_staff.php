@@ -2,17 +2,12 @@
 include 'db_connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Debugging: Print submitted data
-    echo "<pre>";
-    print_r($_POST);
-    echo "</pre>";
-
     $name = trim($_POST['name']);
     $email = trim($_POST['email']);
     $phone = trim($_POST['phone']);
     $role = $_POST['role'];
     $username = trim($_POST['username']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Secure password storage
+    $password = $_POST['password']; 
 
     // Check if email or username already exists
     $checkQuery = "SELECT id FROM users WHERE email = ? OR username = ?";
@@ -31,8 +26,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ssssss", $name, $email, $phone, $role, $username, $password);
 
         if ($stmt->execute()) {
-            // After successful registration, redirect to the staff dashboard
-            header("Location: admin_dashboard.html"); // Redirect to staff dashboard
+            // Redirect with success message showing username and password
+    $password = $_POST['password']; 
+            header("Location: register_staff.html?success=" . urlencode("Username: $username | Password: $password"));
             exit();
         } else {
             header("Location: register_staff.html?error=" . urlencode("Error: " . $conn->error));

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Reports</title>
+  <link rel="stylesheet" href="assets/css/style7.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Daycare Payment Reports</h1>
+
+    <!-- Report Controls -->
+    <div class="report-controls">
+      <div class="form-group">
+        <label for="reportType">Select Report Type:</label>
+        <select id="reportType" onchange="changeReportType()">
+          <option value="monthly_summary">Monthly Summary</option>
+          <option value="parent_history">Parent Payment History</option>
+          <option value="overdue_list">Overdue Payments</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="monthGroup">
+        <label for="monthSelect">Select Month:</label>
+        <input type="month" id="monthSelect" value="2025-06">
+      </div>
+
+      <div class="form-group" id="parentGroup" style="display:none;">
+        <label for="parentSelect">Select Parent:</label>
+        <select id="parentSelect"></select>
+      </div>
+
+      <div class="form-group">
+        <button onclick="generateReport()" class="btn-primary">Generate Report</button>
+      </div>
+    </div>
+
+    <!-- Output Section -->
+    <div class="report-output" id="reportOutput"></div>
+
+    <!-- Chart -->
+    <canvas id="chart" style="max-width: 600px; margin: 30px auto; display: none;"></canvas>
+  </div>
+
+  <script>
+    function changeReportType() {
+      const type = document.getElementById('reportType').value;
+      document.getElementById('parentGroup').style.display = (type === 'parent_history') ? 'block' : 'none';
+      document.getElementById('monthGroup').style.display = (type !== 'parent_history') ? 'block' : 'none';
+    }
+
+    async function loadParents() {
+      const res = await fetch('manage_payments.php?action=parents');
+      const parents = await res.json();
+      const select = document.getElementById('parentSelect');
+      select.innerHTML = '<option value="">-- Select Parent --</option>';
+      parents.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        select.appendChild(opt);
+      });
+    }
+
+    async function generateReport() {
+      const type = document.getElementById('reportType').value;
+      const month = document.getElementById('monthSelect').value;
+      const parentId = document.getElementById('parentSelect').value;
+      let url = `reports.php?action=${type}`;
+
+      if (type === 'monthly_summary') {
+        url += `&month=${month}`;
+      } else if (type === 'parent_history' && parentId) {
+        url += `&parent_id=${parentId}`;
+      }
+
+      const res = await fetch(url);
+      const data = await res.json();
+      const output = document.getElementById('reportOutput');
+      const chart = document.getElementById('chart');
+      output.innerHTML = '';
+      chart.style.display = 'none';
+
+      if (type === 'monthly_summary') {
+        output.innerHTML = `
+          <div class="card">
+            <h2>📅 Monthly Summary – ${month}</h2>
+            <ul>
+              <li><strong>Total Parents:</strong> ${data.total ?? 0}</li>
+              <li><strong>Paid:</strong> ${data.paid ?? 0}</li>
+              <li><strong>Pending:</strong> ${data.pending ?? 0}</li>
+              <li><strong>Overdue:</strong> ${data.overdue ?? 0}</li>
+              <li><strong>Total Collected:</strong> $${parseFloat(data.collected ?? 0).toFixed(2)}</li>
+            </ul>
+          </div>
+        `;
+
+        chart.style.display = 'block';
+        new Chart(chart, {
+          type: 'doughnut',
+          data: {
+            labels: ['Paid', 'Pending', 'Overdue'],
+            datasets: [{
+              label: 'Payments',
+              data: [
+                parseInt(data.paid ?? 0),
+                parseInt(data.pending ?? 0),
+                parseInt(data.overdue ?? 0)
+              ],
+              backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+            }]
+          }
+        });
+
+      } else if (type === 'parent_history') {
+        output.innerHTML = `
+          <div class="card">
+            <h2>👤 Parent Payment History</h2>
+            <table>
+              <tr><th>Month</th><th>Amount</th><th>Status</th><th>Due Date</th></tr>
+              ${data.map(p => `
+                <tr>
+                  <td>${p.month}</td>
+                  <td>$${parseFloat(p.amount).toFixed(2)}</td>
+                  <td>${p.status}</td>
+                  <td>${p.due_date}</td>
+                </tr>
+              `).join('')}
+            </table>
+          </div>
+        `;
+      } else if (type === 'overdue_list') {
+        output.innerHTML = `
+          <div class="card">
+            <h2>🚨 Overdue Payments</h2>
+            <table>
+              <tr><th>Parent</th><th>Month</th><th>Amount</th><th>Due Date</th></tr>
+              ${data.map(p => `
+                <tr>
+                  <td>${p.parent_name}</td>
+                  <td>${p.month}</td>
+                  <td>$${parseFloat(p.amount).toFixed(2)}</td>
+                  <td>${p.due_date}</td>
+                </tr>
+              `).join('')}
+            </table>
+          </div>
+        `;
+      }
+    }
+
+    loadParents();
+    changeReportType();
+  </script>
+</body>
+</html>

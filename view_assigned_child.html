@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Assigned Children</title>
+  <link rel="stylesheet" href="assets/css/style9.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Assigned Children</h1>
+
+    <?php if (!empty($children)): ?>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Date of Birth</th>
+            <th>Allergies</th>
+            <th>Medications</th>
+            <th>Medical Conditions</th>
+            <th>Emergency Contact Name</th>
+            <th>Emergency Contact Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($children as $child): ?>
+            <tr>
+              <td><?= htmlspecialchars($child['name']) ?></td>
+              <td><?= htmlspecialchars($child['date_of_birth']) ?></td>
+              <td><?= htmlspecialchars($child['allergies']) ?></td>
+              <td><?= htmlspecialchars($child['medications']) ?></td>
+              <td><?= htmlspecialchars($child['medical_conditions']) ?></td>
+              <td><?= htmlspecialchars($child['emergency_contact_name']) ?></td>
+              <td><?= htmlspecialchars($child['emergency_contact_phone']) ?></td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    <?php else: ?>
+      <p class="no-data">No children assigned to you.</p>
+    <?php endif; ?>
+  </div>
+</body>
+</html>

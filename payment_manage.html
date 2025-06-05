@@ -1,39 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Add Payment</title>
-    <link rel="stylesheet" href="assets/css/style5.css">
+  <meta charset="UTF-8">
+  <title>Manage Payments</title>
+  <link rel="stylesheet" href="assets/css/style6.css">
 </head>
 <body>
+  <div class="container">
+    <h2>Payment Management</h2>
 
-<div class="container">
-    <h2>Add Payment</h2>
+    <!-- Parent Filter Dropdown -->
+    <label for="parentFilter">Filter by Parent:</label>
+    <select id="parentFilter">
+      <option value="">-- All Parents --</option>
+    </select>
 
-    
-    <form action="http://localhost/carenest/manage_payments.php" method="POST">
-        <label for="parent_id">Parent ID:</label>
-        <input type="number" id="parent_id" name="parent_id" required>
+    <!-- Generate & Delete Buttons -->
+    <button class="btn-generate" onclick="generatePayments()">
+      Generate Payments for This Month
+    </button>
+    <button class="btn-clear" onclick="clearAllPayments()">
+      Delete All Payments
+    </button>
 
-        <label for="amount">Amount (USD):</label>
-        <input type="number" id="amount" name="amount" step="0.01" required>
+    <!-- Payments Table -->
+    <table id="paymentTable">
+      <thead>
+        <tr>
+          <th>Parent</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Month</th>
+          <th>Payment Date</th>
+          <th>Due Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Filled by JavaScript -->
+      </tbody>
+    </table>
+  </div>
 
-        <label for="status">Payment Status:</label>
-        <select id="status" name="status" required>
-            <option value="Pending">Pending</option>
-            <option value="Paid">Paid</option>
-            <option value="Overdue">Overdue</option>
-        </select>
+  <script>
+    // 1) Populate the parent dropdown
+    async function fetchParents(selectedId = '') {
+      const res = await fetch('manage_payments.php?action=parents');
+      let data;
+      try {
+        data = await res.json();
+      } catch (e) {
+        console.error('Failed to parse parents JSON:', e);
+        return;
+      }
+      if (data.error) {
+        console.error('Backend error (parents):', data.error);
+        return;
+      }
+      const select = document.getElementById('parentFilter');
+      select.innerHTML = '<option value="">-- All Parents --</option>';
+      data.forEach(parent => {
+        const opt = document.createElement('option');
+        opt.value = parent.id;
+        opt.textContent = parent.name;
+        if (parent.id == selectedId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
 
-        <label for="month">Payment Year:</label>
-        <input type="number" id="month" name="month" min="2020" max="2099" required>
+    // 2) Fetch payments (all or filtered by a single parent)
+    async function fetchPayments() {
+      const parentId = document.getElementById('parentFilter').value;
+      const url = parentId 
+        ? `manage_payments.php?action=payments&parent_id=${parentId}` 
+        : 'manage_payments.php?action=payments';
+      const res = await fetch(url);
+      const data = await res.json();
 
-        <label for="payment_date">Payment Date:</label>
-        <input type="date" id="payment_date" name="payment_date">
+      const tbody = document.querySelector('#paymentTable tbody');
+      tbody.innerHTML = '';
 
-        <button type="submit">Submit Payment</button>
-    </form>
-</div>
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7">No payments found.</td></tr>';
+        return;
+      }
 
+      data.forEach(p => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${p.parent_name}</td>
+          <td>${parseFloat(p.amount).toFixed(2)}</td>
+          <td>${p.status}</td>
+          <td>${p.month}</td>
+          <td>${p.payment_date}</td>
+          <td>${p.due_date}</td>
+          <td>
+            ${p.status === 'Pending'
+              ? `<button class="btn-paid" onclick="markPaid(${p.id})">Mark as Paid</button>`
+              : '—'
+            }
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // 3) Mark a specific payment as Paid
+    async function markPaid(id) {
+      await fetch(`manage_payments.php?action=mark_paid&id=${id}`);
+      fetchPayments();
+    }
+
+    // 4) Generate new month’s payments & reset filter to “All”
+    async function generatePayments() {
+      if (!confirm('Mark overdue payments and generate new month for all parents?')) return;
+      await fetch('manage_payments.php?action=generate_month');
+      await fetchParents();      // Re-populate dropdown
+      document.getElementById('parentFilter').value = ''; // Reset to “All”
+      fetchPayments();
+    }
+
+    // 5) Delete all payment records & reset filter
+    async function clearAllPayments() {
+      if (!confirm('This will delete ALL payment records. Continue?')) return;
+      await fetch('manage_payments.php?action=delete_all');
+      await fetchParents();
+      document.getElementById('parentFilter').value = '';
+      fetchPayments();
+    }
+
+    // 6) On dropdown change, filter payments
+    document.getElementById('parentFilter').addEventListener('change', fetchPayments);
+
+    // 7) Initial load
+    fetchParents().then(fetchPayments);
+  </script>
 </body>
 </html>
