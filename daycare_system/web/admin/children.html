@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Children Management - CareNest Daycare | Professional Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+            color: #1a2a3a;
+            overflow-x: hidden;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Professional Blue Theme */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0a2540 0%, #1a3a5c 50%, #0d2b45 100%);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sidebar closed state for mobile */
+        .sidebar.closed {
+            transform: translateX(-100%);
+        }
+
+        /* Custom Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        /* Sidebar Header with Logo */
+        .sidebar-header {
+            padding: 35px 20px 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            width: 140px;
+            height: auto;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 15px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo:hover {
+            transform: scale(1.02);
+        }
+
+        .sidebar-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.3px;
+        }
+
+        /* Navigation */
+        .sidebar-nav {
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .nav-item i {
+            width: 22px;
+            font-size: 16px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: #1e88e5;
+            color: white;
+            box-shadow: 0 2px 8px rgba(30, 136, 229, 0.3);
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.25s;
+            background: rgba(220, 38, 38, 0.15);
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(220, 38, 38, 0.3);
+            color: #fecaca;
+            transform: translateX(5px);
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 101;
+            background: #0a2540;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .menu-toggle:hover {
+            background: #1e88e5;
+            transform: scale(1.05);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 25px 35px;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        .welcome-message h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0a2540;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-message p {
+            color: #5a6e7c;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        /* Primary Button */
+        .btn-primary {
+            background: #1e88e5;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(30, 136, 229, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.4);
+        }
+
+        /* Search Card */
+        .search-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box-wrapper {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box-wrapper input {
+            width: 100%;
+            padding: 12px 45px 12px 45px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #1a2a3a;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .search-box-wrapper input:focus {
+            outline: none;
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+            background: white;
+        }
+
+        .search-box-wrapper input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-box-wrapper .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .search-stats {
+            background: #f8fafc;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .clear-search-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px 22px;
+            border-radius: 30px;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .clear-search-btn:hover {
+            background: #e2e8f0;
+        }
+
+        /* Table Container */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 12px;
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .table-row-match {
+            background: #e3f2fd;
+        }
+
+        /* Phone Link Style */
+        .phone-link {
+            color: #1e88e5;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .phone-link:hover {
+            color: #1565c0;
+            text-decoration: underline;
+        }
+
+        /* Action Buttons */
+        .btn-edit {
+            padding: 6px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+            background: #1e88e5;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-edit:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 20px;
+            animation: modalIn 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 22px 28px;
+            background: #0a2540;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .close {
+            font-size: 28px;
+            cursor: pointer;
+            color: white;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1a2a3a;
+            font-size: 13px;
+        }
+
+        .form-group label i {
+            width: 20px;
+            color: #1e88e5;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+            background: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 10px 24px;
+            border-radius: 10px;
+            color: #475569;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* Toast Message - Blurry Popup */
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            animation: toastSlide 0.3s ease;
+            max-width: 350px;
+        }
+
+        @keyframes toastSlide {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid;
+        }
+
+        .toast-success {
+            border-left-color: #10b981;
+        }
+        .toast-success i {
+            color: #10b981;
+        }
+
+        .toast-error {
+            border-left-color: #ef4444;
+        }
+        .toast-error i {
+            color: #ef4444;
+        }
+
+        .toast-info {
+            border-left-color: #1e88e5;
+        }
+        .toast-info i {
+            color: #1e88e5;
+        }
+
+        .toast-content i {
+            font-size: 20px;
+        }
+
+        .toast-content span {
+            flex: 1;
+            color: #1a2a3a;
+            font-size: 14px;
+        }
+
+        /* Call Confirm Dialog */
+        .call-dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1500;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .call-dialog {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 28px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: dialogPop 0.2s ease;
+        }
+
+        @keyframes dialogPop {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .call-dialog i {
+            font-size: 48px;
+            color: #1e88e5;
+            margin-bottom: 15px;
+        }
+
+        .call-dialog h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #1a2a3a;
+        }
+
+        .call-dialog p {
+            color: #5a6e7c;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .call-dialog-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-call-confirm {
+            background: #1e88e5;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-call-cancel {
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+        }
+
+        .loading-state i {
+            font-size: 40px;
+            color: #1e88e5;
+            margin-bottom: 15px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .badge-allergy {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-medication {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 70px 15px 20px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box-wrapper {
+                max-width: 100%;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .toast-message {
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                max-width: calc(100% - 40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Toggle Button -->
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../../images/logo1.png" alt="CareNest Logo" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/140x60?text=CareNest'">
+                <h3>CareNest</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="parents.html" class="nav-item"><i class="fas fa-user-friends"></i> Parents</a>
+                <a href="children.html" class="nav-item active"><i class="fas fa-baby"></i> Children</a>
+                <a href="staff.html" class="nav-item"><i class="fas fa-users"></i> Staff</a>
+                <a href="payments.html" class="nav-item"><i class="fas fa-dollar-sign"></i> Payments</a>
+                <a href="reports.html" class="nav-item"><i class="fas fa-chart-line"></i> Reports</a>
+                <a href="messages.html" class="nav-item"><i class="fas fa-envelope"></i> Messages</a>
+                <a href="meal_plan.html" class="nav-item"><i class="fas fa-utensils"></i> Meal Plan</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="../../api/logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <div class="top-bar">
+                <div class="welcome-message">
+                    <h2>Children Management</h2>
+                    <p>Manage children with complete medical & emergency contact details</p>
+                </div>
+                <button class="btn-primary" onclick="showAddModal()">
+                    <i class="fas fa-plus"></i> Register Child
+                </button>
+            </div>
+
+            <!-- Search Card -->
+            <div class="search-card">
+                <div class="search-container">
+                    <div class="search-box-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Search by name, parent, staff, allergies, medications..." onkeyup="filterChildren()">
+                        <i class="fas fa-times-circle" id="clearSearchIcon" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94a3b8; display: none;" onclick="clearSearch()"></i>
+                    </div>
+                    <div class="search-stats" id="searchStats">
+                        <i class="fas fa-users"></i> <span id="totalCount">0</span> children
+                    </div>
+                    <button class="clear-search-btn" onclick="clearSearch()">
+                        <i class="fas fa-sync-alt"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-container">
+                <table id="childrenTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Child Name</th>
+                            <th>DOB</th>
+                            <th>Age</th>
+                            <th>Parent</th>
+                            <th>Staff</th>
+                            <th>Allergies</th>
+                            <th>Medications</th>
+                            <th>Medical Conditions</th>
+                            <th>Emergency Contact</th>
+                            <th>Emergency Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="childrenTableBody">
+                        <tr>
+                            <td colspan="12" class="loading-state">
+                                <i class="fas fa-spinner fa-pulse"></i>
+                                <p>Loading children data...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-baby"></i> Register New Child</h3>
+                <span class="close" onclick="closeModal('addModal')">&times;</span>
+            </div>
+            <form id="addChildForm" style="padding: 28px;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Child Name *</label>
+                        <input type="text" id="add_name" required placeholder="Enter child's full name">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar"></i> Date of Birth *</label>
+                        <input type="date" id="add_dob" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-user-friends"></i> Parent/Guardian</label>
+                        <select id="add_parent_id">
+                            <option value="">Select Parent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user-md"></i> Assigned Staff</label>
+                        <select id="add_staff_id">
+                            <option value="">Select Staff</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-allergies"></i> Allergies</label>
+                    <textarea id="add_allergies" placeholder="e.g., Peanuts, Dairy, Latex..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-capsules"></i> Medications</label>
+                    <textarea id="add_medications" placeholder="e.g., Epipen, Inhaler, Insulin..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-heartbeat"></i> Medical Conditions</label>
+                    <textarea id="add_medical_conditions" placeholder="e.g., Asthma, Diabetes, Epilepsy..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-phone-alt"></i> Emergency Contact Name</label>
+                        <input type="text" id="add_emergency_contact" placeholder="Emergency contact person">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-mobile-alt"></i> Emergency Phone</label>
+                        <input type="tel" id="add_emergency_phone" placeholder="Emergency phone number">
+                    </div>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn-primary">Register Child</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Child Information</h3>
+                <span class="close" onclick="closeModal('editModal')">&times;</span>
+            </div>
+            <form id="editChildForm" style="padding: 28px;">
+                <input type="hidden" id="edit_id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Child Name *</label>
+                        <input type="text" id="edit_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar"></i> Date of Birth *</label>
+                        <input type="date" id="edit_dob" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-user-friends"></i> Parent/Guardian</label>
+                        <select id="edit_parent_id">
+                            <option value="">Select Parent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user-md"></i> Assigned Staff</label>
+                        <select id="edit_staff_id">
+                            <option value="">Select Staff</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-allergies"></i> Allergies</label>
+                    <textarea id="edit_allergies" placeholder="e.g., Peanuts, Dairy, Latex..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-capsules"></i> Medications</label>
+                    <textarea id="edit_medications" placeholder="e.g., Epipen, Inhaler, Insulin..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-heartbeat"></i> Medical Conditions</label>
+                    <textarea id="edit_medical_conditions" placeholder="e.g., Asthma, Diabetes, Epilepsy..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-phone-alt"></i> Emergency Contact Name</label>
+                        <input type="text" id="edit_emergency_contact">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-mobile-alt"></i> Emergency Phone</label>
+                        <input type="tel" id="edit_emergency_phone">
+                    </div>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn-primary">Update Child</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let allChildren = [];
+        let currentFilteredChildren = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadChildren();
+            loadParents();
+            loadStaff();
+            loadEditParents();
+            loadEditStaff();
+            
+            document.getElementById('addChildForm').addEventListener('submit', addChild);
+            document.getElementById('editChildForm').addEventListener('submit', updateChild);
+            document.getElementById('searchInput').addEventListener('keyup', filterChildren);
+        });
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.menu-toggle');
+            if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+                if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+
+        // Show blurry toast message
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle');
+            toast.innerHTML = `
+                <div class="toast-content toast-${type}">
+                    <i class="fas ${icon}"></i>
+                    <span>${escapeHtml(message)}</span>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+
+        // Calculate age from DOB
+        function calculateAge(dob) {
+            if (!dob) return '—';
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age + ' yrs';
+        }
+
+        // Get all children from PHP
+        async function loadChildren() {
+            try {
+                const response = await fetch('../../api/admin/get_children.php');
+                const children = await response.json();
+                
+                if (children.error) {
+                    showToast(children.error, 'error');
+                    document.getElementById('childrenTableBody').innerHTML = `
+                        <tr><td colspan="12" class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>${children.error}</p>
+                        </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                allChildren = children;
+                currentFilteredChildren = [...allChildren];
+                updateSearchStats();
+                renderTable(currentFilteredChildren);
+                
+            } catch (error) {
+                console.error('Error loading children:', error);
+                showToast('Failed to load children data', 'error');
+                document.getElementById('childrenTableBody').innerHTML = `
+                    <tr><td colspan="12" class="empty-state">
+                        <i class="fas fa-database"></i>
+                        <p>Error loading data. Please refresh the page.</p>
+                    </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Filter children based on search input
+        function filterChildren() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            const clearIcon = document.getElementById('clearSearchIcon');
+            
+            if (searchTerm === '') {
+                currentFilteredChildren = [...allChildren];
+                clearIcon.style.display = 'none';
+            } else {
+                clearIcon.style.display = 'block';
+                currentFilteredChildren = allChildren.filter(child => {
+                    return (child.name && child.name.toLowerCase().includes(searchTerm)) ||
+                           (child.parent_name && child.parent_name.toLowerCase().includes(searchTerm)) ||
+                           (child.staff_name && child.staff_name.toLowerCase().includes(searchTerm)) ||
+                           (child.allergies && child.allergies.toLowerCase().includes(searchTerm)) ||
+                           (child.medications && child.medications.toLowerCase().includes(searchTerm)) ||
+                           (child.medical_conditions && child.medical_conditions.toLowerCase().includes(searchTerm)) ||
+                           (child.emergency_contact_name && child.emergency_contact_name.toLowerCase().includes(searchTerm)) ||
+                           (child.emergency_contact_phone && child.emergency_contact_phone.toLowerCase().includes(searchTerm));
+                });
+            }
+            
+            updateSearchStats();
+            renderTable(currentFilteredChildren);
+            highlightSearchTerm(searchTerm);
+        }
+        
+        function highlightSearchTerm(searchTerm) {
+            if (!searchTerm) return;
+            const rows = document.querySelectorAll('#childrenTableBody tr');
+            rows.forEach(row => {
+                let hasMatch = false;
+                for (let i = 0; i < row.cells.length - 1; i++) {
+                    if (row.cells[i] && row.cells[i].innerText.toLowerCase().includes(searchTerm)) {
+                        hasMatch = true;
+                        break;
+                    }
+                }
+                if (hasMatch) {
+                    row.classList.add('table-row-match');
+                } else {
+                    row.classList.remove('table-row-match');
+                }
+            });
+        }
+        
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchIcon').style.display = 'none';
+            currentFilteredChildren = [...allChildren];
+            updateSearchStats();
+            renderTable(currentFilteredChildren);
+            document.querySelectorAll('#childrenTableBody tr').forEach(row => row.classList.remove('table-row-match'));
+        }
+        
+        function updateSearchStats() {
+            const totalCount = allChildren.length;
+            const filteredCount = currentFilteredChildren.length;
+            const statsSpan = document.getElementById('searchStats');
+            
+            if (filteredCount === totalCount) {
+                statsSpan.innerHTML = `<i class="fas fa-users"></i> ${totalCount} child${totalCount !== 1 ? 'ren' : ''} total`;
+            } else {
+                statsSpan.innerHTML = `<i class="fas fa-filter"></i> Showing ${filteredCount} of ${totalCount}`;
+            }
+        }
+        
+        function renderTable(children) {
+            const tbody = document.getElementById('childrenTableBody');
+            
+            if (!children || children.length === 0) {
+                const searchTerm = document.getElementById('searchInput').value.trim();
+                tbody.innerHTML = `
+                    <tr><td colspan="12" class="empty-state">
+                        <i class="fas fa-baby"></i>
+                        <p>${searchTerm ? 'No children match your search.' : 'No children registered yet.'}</p>
+                        ${!searchTerm ? '<button class="btn-primary" style="margin-top: 10px;" onclick="showAddModal()"><i class="fas fa-plus"></i> Register First Child</button>' : ''}
+                    </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = children.map(child => `
+                <tr>
+                    <td>${child.id}</td>
+                    <td><strong>${escapeHtml(child.name)}</strong></td>
+                    <td>${child.date_of_birth || '—'}</td>
+                    <td>${calculateAge(child.date_of_birth)}</td>
+                    <td>${child.parent_name ? escapeHtml(child.parent_name) : '<span style="color:#94a3b8;">Not assigned</span>'}</td>
+                    <td>${child.staff_name ? escapeHtml(child.staff_name) : '<span style="color:#94a3b8;">Not assigned</span>'}</td>
+                    <td>${child.allergies ? `<span class="badge badge-allergy">${escapeHtml(child.allergies.substring(0, 40))}${child.allergies.length > 40 ? '...' : ''}</span>` : '—'}</td>
+                    <td>${child.medications ? `<span class="badge badge-medication">${escapeHtml(child.medications.substring(0, 40))}${child.medications.length > 40 ? '...' : ''}</span>` : '—'}</td>
+                    <td>${child.medical_conditions ? escapeHtml(child.medical_conditions.substring(0, 40)) + (child.medical_conditions.length > 40 ? '...' : '') : '—'}</td>
+                    <td>${child.emergency_contact_name ? escapeHtml(child.emergency_contact_name) : '—'}</td>
+                    <td>
+                        ${child.emergency_contact_phone ? 
+                            `<a class="phone-link" onclick="showCallDialog('${escapeHtml(child.emergency_contact_phone)}', '${escapeHtml(child.name)}')">
+                                <i class="fas fa-phone"></i> ${escapeHtml(child.emergency_contact_phone)}
+                            </a>` : '—'}
+                    </td>
+                    <td>
+                        <button onclick="openEditModal(${child.id})" class="btn-edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </td>
+                </table>
+            `).join('');
+        }
+
+        // Show call confirmation dialog with blur background
+        function showCallDialog(phoneNumber, childName) {
+            const overlay = document.createElement('div');
+            overlay.className = 'call-dialog-overlay';
+            overlay.innerHTML = `
+                <div class="call-dialog">
+                    <i class="fas fa-phone-alt"></i>
+                    <h4>Call Emergency Contact</h4>
+                    <p>Do you want to call <strong>${escapeHtml(phoneNumber)}</strong><br>for child <strong>${escapeHtml(childName)}</strong>?</p>
+                    <div class="call-dialog-buttons">
+                        <button class="btn-call-confirm" onclick="initiateCall('${phoneNumber}', this)">Yes, Call Now</button>
+                        <button class="btn-call-cancel" onclick="this.closest('.call-dialog-overlay').remove()">Cancel</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function initiateCall(phoneNumber, button) {
+            const overlay = button.closest('.call-dialog-overlay');
+            if (overlay) overlay.remove();
+            window.location.href = `tel:${phoneNumber}`;
+            showToast(`Calling ${phoneNumber}...`, 'info');
+        }
+
+        // Send new child to PHP
+        async function addChild(e) {
+            e.preventDefault();
+            
+            const data = {
+                name: document.getElementById('add_name').value,
+                dob: document.getElementById('add_dob').value,
+                parent_id: document.getElementById('add_parent_id').value,
+                staff_id: document.getElementById('add_staff_id').value,
+                allergies: document.getElementById('add_allergies').value,
+                medications: document.getElementById('add_medications').value,
+                medical_conditions: document.getElementById('add_medical_conditions').value,
+                emergency_contact: document.getElementById('add_emergency_contact').value,
+                emergency_phone: document.getElementById('add_emergency_phone').value
+            };
+            
+            try {
+                const response = await fetch('../../api/admin/add_child.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Child registered successfully!', 'success');
+                    closeModal('addModal');
+                    document.getElementById('addChildForm').reset();
+                    loadChildren();
+                } else {
+                    showToast(result.error || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                showToast('Error adding child', 'error');
+            }
+        }
+
+        // Open edit modal with child data
+        async function openEditModal(id) {
+            try {
+                const response = await fetch('../../api/admin/get_children.php');
+                const children = await response.json();
+                const child = children.find(c => c.id == id);
+                
+                if (child) {
+                    document.getElementById('edit_id').value = child.id;
+                    document.getElementById('edit_name').value = child.name || '';
+                    document.getElementById('edit_dob').value = child.date_of_birth || '';
+                    document.getElementById('edit_parent_id').value = child.parent_id || '';
+                    document.getElementById('edit_staff_id').value = child.assigned_staff_id || '';
+                    document.getElementById('edit_allergies').value = child.allergies || '';
+                    document.getElementById('edit_medications').value = child.medications || '';
+                    document.getElementById('edit_medical_conditions').value = child.medical_conditions || '';
+                    document.getElementById('edit_emergency_contact').value = child.emergency_contact_name || '';
+                    document.getElementById('edit_emergency_phone').value = child.emergency_contact_phone || '';
+                    
+                    openModal('editModal');
+                }
+            } catch (error) {
+                showToast('Error loading child data', 'error');
+            }
+        }
+
+        // Send updated child to PHP
+        async function updateChild(e) {
+            e.preventDefault();
+            
+            const data = {
+                id: document.getElementById('edit_id').value,
+                name: document.getElementById('edit_name').value,
+                dob: document.getElementById('edit_dob').value,
+                parent_id: document.getElementById('edit_parent_id').value,
+                staff_id: document.getElementById('edit_staff_id').value,
+                allergies: document.getElementById('edit_allergies').value,
+                medications: document.getElementById('edit_medications').value,
+                medical_conditions: document.getElementById('edit_medical_conditions').value,
+                emergency_contact: document.getElementById('edit_emergency_contact').value,
+                emergency_phone: document.getElementById('edit_emergency_phone').value
+            };
+            
+            try {
+                const response = await fetch('../../api/admin/update_child.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    showToast('Child updated successfully!', 'success');
+                    closeModal('editModal');
+                    loadChildren();
+                } else {
+                    showToast(result.error || 'Update failed', 'error');
+                }
+            } catch (error) {
+                showToast('Error updating child', 'error');
+            }
+        }
+
+        // Load parents dropdown
+        async function loadParents() {
+            try {
+                const response = await fetch('../../api/admin/get_parents.php');
+                const parents = await response.json();
+                const select = document.getElementById('add_parent_id');
+                select.innerHTML = '<option value="">Select Parent</option>' + 
+                    parents.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading parents:', error);
+            }
+        }
+
+        // Load staff dropdown
+        async function loadStaff() {
+            try {
+                const response = await fetch('../../api/admin/get_staff.php');
+                const staff = await response.json();
+                const select = document.getElementById('add_staff_id');
+                select.innerHTML = '<option value="">Select Staff</option>' + 
+                    staff.map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading staff:', error);
+            }
+        }
+
+        // Load parents for edit dropdown
+        async function loadEditParents() {
+            try {
+                const response = await fetch('../../api/admin/get_parents.php');
+                const parents = await response.json();
+                const select = document.getElementById('edit_parent_id');
+                select.innerHTML = '<option value="">Select Parent</option>' + 
+                    parents.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading parents:', error);
+            }
+        }
+
+        // Load staff for edit dropdown
+        async function loadEditStaff() {
+            try {
+                const response = await fetch('../../api/admin/get_staff.php');
+                const staff = await response.json();
+                const select = document.getElementById('edit_staff_id');
+                select.innerHTML = '<option value="">Select Staff</option>' + 
+                    staff.map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading staff:', error);
+            }
+        }
+
+        function showAddModal() { 
+            document.getElementById('addChildForm').reset();
+            openModal('addModal'); 
+        }
+        
+        function openModal(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+        }
+        
+        function closeModal(id) { 
+            document.getElementById(id).style.display = 'none'; 
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

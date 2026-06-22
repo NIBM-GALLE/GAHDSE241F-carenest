@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Plan - CareNest Daycare | Staff Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+            color: #1a2a3a;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Blue Theme */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+            box-shadow: 8px 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+
+        .sidebar-header {
+            padding: 35px 20px 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo {
+            width: 140px;
+            height: auto;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 15px;
+        }
+
+        .sidebar-header h3 { 
+            font-size: 24px; 
+            font-weight: 700; 
+            background: linear-gradient(135deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .sidebar-nav {
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 18px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .nav-item i { width: 22px; font-size: 16px; }
+        .nav-item:hover { 
+            background: linear-gradient(135deg, rgba(30, 136, 229, 0.2), rgba(30, 136, 229, 0.1)); 
+            color: white; 
+            transform: translateX(5px);
+        }
+        .nav-item.active { 
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            color: white; 
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 18px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            background: rgba(220, 38, 38, 0.15);
+            font-size: 14px;
+        }
+
+        .logout-btn:hover { 
+            background: rgba(220, 38, 38, 0.3); 
+            color: #fecaca; 
+            transform: translateX(5px);
+        }
+
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 101;
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 25px 35px;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .welcome-message h2 { 
+            font-size: 26px; 
+            font-weight: 700; 
+            background: linear-gradient(135deg, #0a2540, #1e88e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .welcome-message p { color: #64748b; margin-top: 5px; font-size: 14px; }
+
+        .online-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .online-dot { color: #10b981; font-size: 10px; }
+
+        /* Alert Messages */
+        .alert {
+            padding: 14px 20px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .alert-success { background: #dcfce7; color: #166534; border-left: 4px solid #10b981; }
+        .alert-error { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+        .alert-info { background: #dbeafe; color: #1e40af; border-left: 4px solid #1e88e5; }
+
+        /* Today's Meal Cards - TOP SECTION */
+        .today-meals-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .today-meal-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+        .today-meal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .today-card-header {
+            padding: 18px 24px;
+            color: #1a2a3a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .today-card-header.infant {
+            background: #FEE2B5;
+        }
+        .today-card-header.toddler {
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            color: white;
+        }
+        .today-card-header i {
+            font-size: 28px;
+        }
+        .today-card-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .today-card-header p {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .today-meal-items {
+            padding: 20px;
+        }
+        .today-meal-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 16px;
+            margin-bottom: 12px;
+        }
+        .today-meal-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .today-meal-icon.breakfast { background: #fef3c7; color: #d97706; }
+        .today-meal-icon.lunch { background: #dcfce7; color: #10b981; }
+        .today-meal-icon.snacks { background: #e0e7ff; color: #1e88e5; }
+        .today-meal-details {
+            flex: 1;
+        }
+        .today-meal-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+        .today-meal-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a2a3a;
+            margin-top: 4px;
+        }
+        .no-today-meal {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+
+        /* Date Range Filter - MIDDLE SECTION */
+        .date-filter-bar {
+            background: white;
+            border-radius: 20px;
+            padding: 15px 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0a2540;
+        }
+        .date-input {
+            padding: 10px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-primary {
+            background: #1e88e5;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            padding: 10px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        .btn-refresh {
+            background: #f1f5f9;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-refresh:hover {
+            background: #1e88e5;
+            color: white;
+            transform: rotate(180deg);
+        }
+        .btn-view {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-view:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        /* Table Container - BOTTOM SECTION */
+        .table-container {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .table-header-actions h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0a2540;
+        }
+        .table-header-actions h3 i {
+            margin-right: 8px;
+            color: #1e88e5;
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th {
+            text-align: left;
+            padding: 14px 12px;
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        td {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 13px;
+            vertical-align: top;
+        }
+        tr:hover td { background: #f8fafc; }
+
+        .group-header-infants {
+            background: #FEE2B5;
+            color: #7a4a0e;
+            text-align: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .group-header-toddlers {
+            background: #dbeafe;
+            color: #1e40af;
+            text-align: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .sub-header {
+            background: #f1f5f9;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-align: center;
+        }
+        .meal-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .meal-badge.infant { background: #FEE2B5; color: #7a4a0e; }
+        .meal-badge.toddler { background: #dbeafe; color: #1e40af; }
+        .bring-from-home {
+            background: #FEE2B5;
+            color: #7a4a0e;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            display: inline-block;
+        }
+
+        .filter-info {
+            font-size: 12px;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 6px 15px;
+            border-radius: 30px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 1300px;
+            border-radius: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px 24px;
+            background: #0a2540;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .modal-header h3 { font-size: 18px; font-weight: 600; color: white; }
+        .close-modal {
+            font-size: 28px;
+            cursor: pointer;
+            color: white;
+            opacity: 0.8;
+        }
+        .close-modal:hover { opacity: 1; }
+        .modal-body { padding: 24px; }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 70px 15px 20px; }
+            .today-meals-section { grid-template-columns: 1fr; }
+            th, td { font-size: 11px; padding: 8px; }
+            .filter-group { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../../images/logo1.png" alt="CareNest Logo" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/140x60?text=CareNest'">
+                <h3>CareNest</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="attendance.html" class="nav-item"><i class="fas fa-calendar-check"></i> Attendance</a>
+                <a href="activities.html" class="nav-item"><i class="fas fa-puzzle-piece"></i> Activities</a>
+                <a href="messages.html" class="nav-item"><i class="fas fa-envelope"></i> Messages</a>
+                <a href="meal_plan.html" class="nav-item active"><i class="fas fa-utensils"></i> Meal Plan</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="../../api/logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <div class="welcome-message">
+                    <h2>🍽️ Meal Plan Management</h2>
+                    <p>Age-based nutritional planning for infants & toddlers</p>
+                </div>
+                <div class="online-status">
+                    <i class="fas fa-circle online-dot"></i>
+                    <span>Connected</span>
+                </div>
+            </div>
+
+            <div id="messageBox" class="alert" style="display:none;"></div>
+
+            <!-- SECTION 1: TODAY'S MEAL CARDS (TOP) -->
+            <div class="today-meals-section">
+                <div class="today-meal-card">
+                    <div class="today-card-header infant">
+                        <div>
+                            <h3>Infants Meal Plan</h3>
+                            <p>6 months - 1 year</p>
+                        </div>
+                    </div>
+                    <div id="todayInfantMeal" class="today-meal-items">
+                        <div class="no-today-meal"><i class="fas fa-spinner fa-pulse"></i> Loading...</div>
+                    </div>
+                </div>
+                <div class="today-meal-card">
+                    <div class="today-card-header toddler">
+                        <div>
+                            <h3>Toddlers Meal Plan</h3>
+                            <p>1 year and above</p>
+                        </div>
+                    </div>
+                    <div id="todayToddlerMeal" class="today-meal-items">
+                        <div class="no-today-meal"><i class="fas fa-spinner fa-pulse"></i> Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: DATE RANGE FILTER (MIDDLE) -->
+            <div class="date-filter-bar">
+                <div class="filter-group">
+                    <span class="filter-label"><i class="fas fa-calendar-alt"></i> Date Range:</span>
+                    <input type="date" id="startDate" class="date-input">
+                    <span>to</span>
+                    <input type="date" id="endDate" class="date-input">
+                    <button class="btn-primary" onclick="applyDateFilter()">
+                        <i class="fas fa-search"></i> Apply Filter
+                    </button>
+                    <button class="btn-secondary" onclick="resetDateFilter()">
+                        <i class="fas fa-undo-alt"></i> Reset
+                    </button>
+                   
+                </div>
+                <div class="filter-group">
+                    <button class="btn-view" onclick="openHistoryModal()">
+                        <i class="fas fa-calendar-alt"></i> View Full History
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECTION 3: MEAL PLAN HISTORY TABLE (BOTTOM) -->
+            <div class="table-container">
+                <div class="table-header-actions">
+                    <h3><i class="fas fa-history"></i> Meal Plan History</h3>
+                    <div class="filter-info" id="filterInfo">
+                        <i class="fas fa-info-circle"></i> Showing all meal plans
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table id="mealPlanTable">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Date</th>
+                                <th colspan="3" class="group-header-infants">INFANTS (6 months - 1 year)</th>
+                                <th colspan="3" class="group-header-toddlers">TODDLERS (Above 1 year)</th>
+                                <th rowspan="2">Bring From Home</th>
+                                <th rowspan="2">Special Notes</th>
+                            </tr>
+                            <tr class="sub-header">
+                                <th>Breakfast</th>
+                                <th>Lunch</th>
+                                <th>Snacks</th>
+                                <th>Breakfast</th>
+                                <th>Lunch</th>
+                                <th>Snacks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mealPlansTableBody">
+                            <tr><td colspan="9" style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-pulse"></i> Loading meal plans...<\/td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-history"></i> All Meal Plans History</h3>
+                <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="filter-group" style="margin-bottom: 20px;">
+                    <input type="date" id="historyStartDate" class="date-input" placeholder="Start Date">
+                    <span>to</span>
+                    <input type="date" id="historyEndDate" class="date-input" placeholder="End Date">
+                    <button class="btn-primary" onclick="filterHistoryByDate()">Filter</button>
+                    <button class="btn-secondary" onclick="resetHistoryFilter()">Reset</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Date</th>
+                                <th colspan="3" class="group-header-infants">INFANTS</th>
+                                <th colspan="3" class="group-header-toddlers">TODDLERS</th>
+                                <th rowspan="2">Bring From Home</th>
+                                <th rowspan="2">Notes</th>
+                            </tr>
+                            <tr class="sub-header">
+                                <th>Breakfast</th>
+                                <th>Lunch</th>
+                                <th>Snacks</th>
+                                <th>Breakfast</th>
+                                <th>Lunch</th>
+                                <th>Snacks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr><td colspan="9" style="text-align: center; padding: 40px;">Loading...<\/td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allMealPlans = [];
+        let currentStartDate = null;
+        let currentEndDate = null;
+
+        // Set default dates to last 30 days
+        const today = new Date();
+        const defaultEndDate = new Date(today);
+        const defaultStartDate = new Date(today);
+        defaultStartDate.setDate(today.getDate() - 30);
+        
+        document.getElementById('startDate').value = defaultStartDate.toISOString().split('T')[0];
+        document.getElementById('endDate').value = defaultEndDate.toISOString().split('T')[0];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllMealPlans();
+        });
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        async function loadAllMealPlans() {
+            try {
+                const response = await fetch('../../api/staff/get_meal_plan.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allMealPlans = data.meal_plan || [];
+                    displayFilteredTable();
+                    displayTodayMeals(allMealPlans);
+                } else {
+                    showMessage(data.error || 'Error loading meal plan', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Failed to load meal plan', 'error');
+            }
+        }
+
+        function applyDateFilter() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            currentStartDate = startDate;
+            currentEndDate = endDate;
+            displayFilteredTable();
+            updateFilterInfo();
+            
+            if (startDate && endDate) {
+                showMessage(`Showing meal plans from ${formatDateForDisplay(startDate)} to ${formatDateForDisplay(endDate)}`, 'success');
+            } else if (startDate) {
+                showMessage(`Showing meal plans from ${formatDateForDisplay(startDate)}`, 'success');
+            } else if (endDate) {
+                showMessage(`Showing meal plans until ${formatDateForDisplay(endDate)}`, 'success');
+            }
+        }
+
+        function resetDateFilter() {
+            currentStartDate = null;
+            currentEndDate = null;
+            document.getElementById('startDate').value = defaultStartDate.toISOString().split('T')[0];
+            document.getElementById('endDate').value = defaultEndDate.toISOString().split('T')[0];
+            displayFilteredTable();
+            updateFilterInfo();
+            showMessage('Filter reset, showing all meal plans', 'success');
+        }
+
+        async function refreshData() {
+            showMessage('Refreshing data...', 'info');
+            await loadAllMealPlans();
+            showMessage('Data refreshed successfully!', 'success');
+        }
+
+        function displayFilteredTable() {
+            let filteredPlans = [...allMealPlans];
+            
+            if (currentStartDate) {
+                filteredPlans = filteredPlans.filter(plan => plan.date >= currentStartDate);
+            }
+            if (currentEndDate) {
+                filteredPlans = filteredPlans.filter(plan => plan.date <= currentEndDate);
+            }
+            
+            filteredPlans.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            const tbody = document.getElementById('mealPlansTableBody');
+            
+            if (filteredPlans.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;">No meal plans found for selected date range<\/td></td>';
+                return;
+            }
+            
+            tbody.innerHTML = filteredPlans.map(plan => {
+                let bringItems = [];
+                if (plan.bring_breakfast == 1) bringItems.push('Breakfast');
+                if (plan.bring_lunch == 1) bringItems.push('Lunch');
+                if (plan.bring_snacks == 1) bringItems.push('Snacks');
+                const bringText = bringItems.length ? bringItems.join(', ') : 'None';
+                
+                return `
+                    <tr>
+                        <td><strong>${formatDate(plan.date)}</strong></td>
+                        <td><span class="meal-badge infant">${escapeHtml(plan.breakfast_infant || '—')}</span></td>
+                        <td><span class="meal-badge infant">${escapeHtml(plan.lunch_infant || '—')}</span></td>
+                        <td><span class="meal-badge infant">${escapeHtml(plan.snacks_infant || '—')}</span></td>
+                        <td><span class="meal-badge toddler">${escapeHtml(plan.breakfast_toddler || '—')}</span></td>
+                        <td><span class="meal-badge toddler">${escapeHtml(plan.lunch_toddler || '—')}</span></td>
+                        <td><span class="meal-badge toddler">${escapeHtml(plan.snacks_toddler || '—')}</span></td>
+                        <td><span class="bring-from-home">${bringText}</span></td>
+                        <td class="notes-cell" title="${escapeHtml(plan.notes || '')}">${escapeHtml((plan.notes || '—').substring(0, 40))}${(plan.notes || '').length > 40 ? '...' : ''}<\/td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateFilterInfo() {
+            const filterInfo = document.getElementById('filterInfo');
+            if (currentStartDate && currentEndDate) {
+                filterInfo.innerHTML = `<i class="fas fa-calendar-alt"></i> Filtered: ${formatDateForDisplay(currentStartDate)} to ${formatDateForDisplay(currentEndDate)}`;
+            } else if (currentStartDate) {
+                filterInfo.innerHTML = `<i class="fas fa-calendar-alt"></i> Filtered: From ${formatDateForDisplay(currentStartDate)}`;
+            } else if (currentEndDate) {
+                filterInfo.innerHTML = `<i class="fas fa-calendar-alt"></i> Filtered: Until ${formatDateForDisplay(currentEndDate)}`;
+            } else {
+                filterInfo.innerHTML = `<i class="fas fa-info-circle"></i> Showing all meal plans`;
+            }
+        }
+
+        function formatDateForDisplay(dateStr) {
+            if (!dateStr) return '';
+            return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function displayTodayMeals(mealPlan) {
+            const today = new Date().toISOString().split('T')[0];
+            const todayPlan = mealPlan.find(m => m.date === today);
+            
+            const infantContainer = document.getElementById('todayInfantMeal');
+            const toddlerContainer = document.getElementById('todayToddlerMeal');
+            
+            if (!todayPlan) {
+                infantContainer.innerHTML = `<div class="no-today-meal"><i class="fas fa-utensils"></i><p>No meal plan for today</p><small>Please check with admin</small></div>`;
+                toddlerContainer.innerHTML = `<div class="no-today-meal"><i class="fas fa-utensils"></i><p>No meal plan for today</p><small>Please check with admin</small></div>`;
+                return;
+            }
+            
+            infantContainer.innerHTML = `
+                <div class="today-meal-row">
+                    <div class="today-meal-icon breakfast"><i class="fas fa-sun"></i></div>
+                    <div class="today-meal-details">
+                        <div class="today-meal-label">BREAKFAST</div>
+                        <div class="today-meal-value">${escapeHtml(todayPlan.breakfast_infant || '—')}</div>
+                    </div>
+                </div>
+                <div class="today-meal-row">
+                    <div class="today-meal-icon lunch"><i class="fas fa-cloud-sun"></i></div>
+                    <div class="today-meal-details">
+                        <div class="today-meal-label">LUNCH</div>
+                        <div class="today-meal-value">${escapeHtml(todayPlan.lunch_infant || '—')}</div>
+                    </div>
+                </div>
+                <div class="today-meal-row">
+                    <div class="today-meal-icon snacks"><i class="fas fa-moon"></i></div>
+                    <div class="today-meal-details">
+                        <div class="today-meal-label">SNACKS</div>
+                        <div class="today-meal-value">${escapeHtml(todayPlan.snacks_infant || '—')}</div>
+                    </div>
+                </div>
+            `;
+            
+            toddlerContainer.innerHTML = `
+                <div class="today-meal-row">
+                    <div class="today-meal-icon breakfast"><i class="fas fa-sun"></i></div>
+                    <div class="today-meal-details">
+                        <div class="today-meal-label">BREAKFAST</div>
+                        <div class="today-meal-value">${escapeHtml(todayPlan.breakfast_toddler || '—')}</div>
+                    </div>
+                </div>
+                <div class="today-meal-row">
+                    <div class="today-meal-icon lunch"><i class="fas fa-cloud-sun"></i></div>
+                    <div class="today-meal-details">
+                        <div class="today-meal-label">LUNCH</div>
+                        <div class="today-meal-value">${escapeHtml(todayPlan.lunch_toddler || '—')}</div>
+                    </div>
+                </div>
+                <div class="today-meal-row">
+                    <div class="today-meal-icon snacks"><i class="fas fa-moon"></i></div>
+                    <div class="today-meal-details">
+                        <div class="today-meal-label">SNACKS</div>
+                        <div class="today-meal-value">${escapeHtml(todayPlan.snacks_toddler || '—')}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openHistoryModal() {
+            const tbody = document.getElementById('historyTableBody');
+            if (!allMealPlans.length) {
+                tbody.innerHTML = '<table><td colspan="9" style="text-align: center; padding: 40px;">No meal plans found<\/td></tr>';
+            } else {
+                const sortedPlans = [...allMealPlans].sort((a, b) => new Date(b.date) - new Date(a.date));
+                tbody.innerHTML = sortedPlans.map(plan => {
+                    let bringItems = [];
+                    if (plan.bring_breakfast == 1) bringItems.push('Breakfast');
+                    if (plan.bring_lunch == 1) bringItems.push('Lunch');
+                    if (plan.bring_snacks == 1) bringItems.push('Snacks');
+                    return `
+                        <tr>
+                            <td><strong>${formatDate(plan.date)}</strong></td>
+                            <td>${escapeHtml(plan.breakfast_infant || '—')}</td>
+                            <td>${escapeHtml(plan.lunch_infant || '—')}</td>
+                            <td>${escapeHtml(plan.snacks_infant || '—')}</td>
+                            <td>${escapeHtml(plan.breakfast_toddler || '—')}</td>
+                            <td>${escapeHtml(plan.lunch_toddler || '—')}</td>
+                            <td>${escapeHtml(plan.snacks_toddler || '—')}</td>
+                            <td><span class="bring-from-home">${bringItems.length ? bringItems.join(', ') : 'None'}</span></td>
+                            <td class="notes-cell">${escapeHtml((plan.notes || '—').substring(0, 50))}<\/td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            document.getElementById('historyModal').style.display = 'flex';
+            document.getElementById('historyStartDate').value = '';
+            document.getElementById('historyEndDate').value = '';
+        }
+
+        function filterHistoryByDate() {
+            const startDate = document.getElementById('historyStartDate').value;
+            const endDate = document.getElementById('historyEndDate').value;
+            
+            let filtered = [...allMealPlans];
+            
+            if (startDate) {
+                filtered = filtered.filter(p => p.date >= startDate);
+            }
+            if (endDate) {
+                filtered = filtered.filter(p => p.date <= endDate);
+            }
+            
+            const tbody = document.getElementById('historyTableBody');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;">No meal plans found for selected date range<\/td></tr>';
+            } else {
+                filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+                tbody.innerHTML = filtered.map(plan => {
+                    let bringItems = [];
+                    if (plan.bring_breakfast == 1) bringItems.push('Breakfast');
+                    if (plan.bring_lunch == 1) bringItems.push('Lunch');
+                    if (plan.bring_snacks == 1) bringItems.push('Snacks');
+                    return `
+                        <tr>
+                            <td><strong>${formatDate(plan.date)}</strong></td>
+                            <td>${escapeHtml(plan.breakfast_infant || '—')}</td>
+                            <td>${escapeHtml(plan.lunch_infant || '—')}</td>
+                            <td>${escapeHtml(plan.snacks_infant || '—')}</td>
+                            <td>${escapeHtml(plan.breakfast_toddler || '—')}</td>
+                            <td>${escapeHtml(plan.lunch_toddler || '—')}</td>
+                            <td>${escapeHtml(plan.snacks_toddler || '—')}</td>
+                            <td><span class="bring-from-home">${bringItems.length ? bringItems.join(', ') : 'None'}</span></td>
+                            <td class="notes-cell">${escapeHtml((plan.notes || '—').substring(0, 50))}<\/td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        function resetHistoryFilter() {
+            document.getElementById('historyStartDate').value = '';
+            document.getElementById('historyEndDate').value = '';
+            openHistoryModal();
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('historyModal').style.display = 'none';
+        }
+
+        function showMessage(message, type) {
+            const msgBox = document.getElementById('messageBox');
+            const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle');
+            msgBox.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+            msgBox.className = `alert alert-${type}`;
+            msgBox.style.display = 'flex';
+            setTimeout(() => msgBox.style.display = 'none', 3000);
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('historyModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
