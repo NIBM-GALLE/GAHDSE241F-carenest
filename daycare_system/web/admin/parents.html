@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Management - CareNest Daycare | Professional Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+            color: #1a2a3a;
+            overflow-x: hidden;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Professional Blue Theme */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0a2540 0%, #1a3a5c 50%, #0d2b45 100%);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: all 0.3s ease;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        /* Sidebar Header with Logo */
+        .sidebar-header {
+            padding: 35px 20px 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            width: 140px;
+            height: auto;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 15px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo:hover {
+            transform: scale(1.02);
+        }
+
+        .sidebar-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.3px;
+        }
+
+        /* Navigation */
+        .sidebar-nav {
+            padding: 25px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .nav-item i {
+            width: 22px;
+            font-size: 16px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: #1e88e5;
+            color: white;
+            box-shadow: 0 2px 8px rgba(30, 136, 229, 0.3);
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.25s;
+            background: rgba(220, 38, 38, 0.15);
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(220, 38, 38, 0.3);
+            color: #fecaca;
+            transform: translateX(5px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 25px 35px;
+            min-height: 100vh;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        .welcome-message h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0a2540;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-message p {
+            color: #5a6e7c;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        /* Primary Button */
+        .btn-primary {
+            background: #1e88e5;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(30, 136, 229, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.4);
+        }
+
+        /* Search Card */
+        .search-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box-wrapper {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box-wrapper input {
+            width: 100%;
+            padding: 12px 45px 12px 45px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #1a2a3a;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .search-box-wrapper input:focus {
+            outline: none;
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+            background: white;
+        }
+
+        .search-box-wrapper input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-box-wrapper .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .search-stats {
+            background: #f8fafc;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .clear-search-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px 22px;
+            border-radius: 30px;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .clear-search-btn:hover {
+            background: #e2e8f0;
+        }
+
+        /* Table Container */
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 20px;
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .table-row-match {
+            background: #e3f2fd;
+        }
+
+        /* Action Buttons */
+        .btn-edit {
+            padding: 6px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+            background: #1e88e5;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-edit:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            width: 90%;
+            max-width: 520px;
+            border-radius: 20px;
+            animation: modalIn 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 22px 28px;
+            background: #0a2540;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .close {
+            font-size: 28px;
+            cursor: pointer;
+            color: white;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1a2a3a;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+            background: white;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 12px 24px;
+            border-radius: 10px;
+            color: #475569;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-success {
+            border-left: 4px solid #10b981;
+            color: #065f46;
+        }
+
+        .alert-error {
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+        }
+
+        .alert-info {
+            border-left: 4px solid #1e88e5;
+            color: #1e40af;
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+        }
+
+        .loading-state i {
+            font-size: 40px;
+            color: #1e88e5;
+            margin-bottom: 15px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box-wrapper {
+                max-width: 100%;
+            }
+            
+            th, td {
+                padding: 12px 12px;
+                font-size: 12px;
+            }
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 101;
+            background: #0a2540;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../../images/logo1.png" alt="CareNest Logo" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/140x60?text=CareNest'">
+                <h3>CareNest</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="parents.html" class="nav-item active"><i class="fas fa-user-friends"></i> Parents</a>
+                <a href="children.html" class="nav-item"><i class="fas fa-baby"></i> Children</a>
+                <a href="staff.html" class="nav-item"><i class="fas fa-users"></i> Staff</a>
+                <a href="payments.html" class="nav-item"><i class="fas fa-dollar-sign"></i> Payments</a>
+                <a href="reports.html" class="nav-item"><i class="fas fa-chart-line"></i> Reports</a>
+                <a href="messages.html" class="nav-item"><i class="fas fa-envelope"></i> Messages</a>
+                <a href="meal_plan.html" class="nav-item"><i class="fas fa-utensils"></i> Meal Plan</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="../../api/logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <div class="welcome-message">
+                    <h2>Parent Management</h2>
+                    <p>Manage parents and guardians of enrolled children</p>
+                </div>
+                <button class="btn-primary" onclick="showAddModal()">
+                    <i class="fas fa-plus"></i> Add New Parent
+                </button>
+            </div>
+
+            <div id="messageBox" class="alert" style="display:none;"></div>
+
+            <!-- Search Card -->
+            <div class="search-card">
+                <div class="search-container">
+                    <div class="search-box-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Search by name, email, or phone..." onkeyup="filterParents()">
+                        <i class="fas fa-times-circle" id="clearSearchIcon" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94a3b8; display: none;" onclick="clearSearch()"></i>
+                    </div>
+                    <div class="search-stats" id="searchStats">
+                        <i class="fas fa-users"></i> <span id="totalCount">0</span> parents
+                    </div>
+                    <button class="clear-search-btn" onclick="clearSearch()">
+                        <i class="fas fa-sync-alt"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-container">
+                <table id="parentsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Username</th>
+                            <th>Registered</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="parentsTableBody">
+                        <tr>
+                            <td colspan="7" class="loading-state">
+                                <i class="fas fa-spinner fa-pulse"></i>
+                                <p>Loading parents data...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Parent Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Register New Parent</h3>
+                <span class="close" onclick="closeModal('addModal')">&times;</span>
+            </div>
+            <form id="addParentForm" style="padding: 28px;">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name *</label>
+                    <input type="text" id="add_name" placeholder="Enter parent's full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email Address *</label>
+                    <input type="email" id="add_email" placeholder="parent@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="add_phone" placeholder="+1 234 567 8900">
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-user-circle"></i> Username *</label>
+                    <input type="text" id="add_username" placeholder="Choose a username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="add_password" value="1234">
+                    <small>Default password: 1234</small>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="submit" class="btn-primary">Register Parent</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let allParents = [];
+        let currentFilteredParents = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadParents();
+            document.getElementById('addParentForm').addEventListener('submit', addParent);
+            document.getElementById('searchInput').addEventListener('keyup', filterParents);
+        });
+
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        }
+
+        async function loadParents() {
+            try {
+                const response = await fetch('../../api/admin/get_parents.php');
+                const parents = await response.json();
+                
+                if (parents.error) {
+                    showMessage(parents.error, 'error');
+                    document.getElementById('parentsTableBody').innerHTML = `
+                        <tr><td colspan="7" class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>${parents.error}</p>
+                        </td></tr>
+                    `;
+                    return;
+                }
+                
+                allParents = parents;
+                currentFilteredParents = [...allParents];
+                updateSearchStats();
+                renderTable(currentFilteredParents);
+                
+            } catch (error) {
+                console.error('Error loading parents:', error);
+                showMessage('Failed to load parents. Please refresh the page.', 'error');
+                document.getElementById('parentsTableBody').innerHTML = `
+                    <tr><td colspan="7" class="empty-state">
+                        <i class="fas fa-database"></i>
+                        <p>Error loading data. Please try again.</p>
+                    </td></tr>
+                `;
+            }
+        }
+
+        function filterParents() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            const clearIcon = document.getElementById('clearSearchIcon');
+            
+            if (searchTerm === '') {
+                currentFilteredParents = [...allParents];
+                clearIcon.style.display = 'none';
+            } else {
+                clearIcon.style.display = 'block';
+                currentFilteredParents = allParents.filter(parent => {
+                    const nameMatch = parent.name && parent.name.toLowerCase().includes(searchTerm);
+                    const phoneMatch = parent.phone && parent.phone.toLowerCase().includes(searchTerm);
+                    const emailMatch = parent.email && parent.email.toLowerCase().includes(searchTerm);
+                    return nameMatch || phoneMatch || emailMatch;
+                });
+            }
+            
+            updateSearchStats();
+            renderTable(currentFilteredParents);
+            highlightSearchTerm(searchTerm);
+        }
+        
+        function highlightSearchTerm(searchTerm) {
+            if (!searchTerm) return;
+            const rows = document.querySelectorAll('#parentsTableBody tr');
+            rows.forEach(row => {
+                if (row.cells.length > 1) {
+                    const nameCell = row.cells[1];
+                    const phoneCell = row.cells[3];
+                    const emailCell = row.cells[2];
+                    if ((nameCell && nameCell.innerText.toLowerCase().includes(searchTerm)) ||
+                        (phoneCell && phoneCell.innerText.toLowerCase().includes(searchTerm)) ||
+                        (emailCell && emailCell.innerText.toLowerCase().includes(searchTerm))) {
+                        row.classList.add('table-row-match');
+                    } else {
+                        row.classList.remove('table-row-match');
+                    }
+                }
+            });
+        }
+        
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchIcon').style.display = 'none';
+            currentFilteredParents = [...allParents];
+            updateSearchStats();
+            renderTable(currentFilteredParents);
+            document.querySelectorAll('#parentsTableBody tr').forEach(row => row.classList.remove('table-row-match'));
+        }
+        
+        function updateSearchStats() {
+            const totalCount = allParents.length;
+            const filteredCount = currentFilteredParents.length;
+            const statsSpan = document.getElementById('searchStats');
+            
+            if (filteredCount === totalCount) {
+                statsSpan.innerHTML = `<i class="fas fa-users"></i> ${totalCount} parent${totalCount !== 1 ? 's' : ''} total`;
+            } else {
+                statsSpan.innerHTML = `<i class="fas fa-filter"></i> Showing ${filteredCount} of ${totalCount}`;
+            }
+        }
+        
+        function renderTable(parents) {
+            const tbody = document.getElementById('parentsTableBody');
+            
+            if (!parents || parents.length === 0) {
+                const searchTerm = document.getElementById('searchInput').value.trim();
+                tbody.innerHTML = `
+                    <tr><td colspan="7" class="empty-state">
+                        <i class="fas fa-user-friends"></i>
+                        <p>${searchTerm ? 'No parents match your search.' : 'No parents registered yet.'}</p>
+                        ${!searchTerm ? '<button class="btn-primary" style="margin-top: 10px;" onclick="showAddModal()"><i class="fas fa-plus"></i> Add First Parent</button>' : ''}
+                    </td></tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = parents.map(parent => `
+                <tr>
+                    <td>${parent.id}</td>
+                    <td><strong>${escapeHtml(parent.name)}</strong></td>
+                    <td>${escapeHtml(parent.email)}</td>
+                    <td>${parent.phone ? escapeHtml(parent.phone) : '<span style="color:#94a3b8;">—</span>'}</td>
+                    <td>${escapeHtml(parent.username)}</td>
+                    <td>${formatDate(parent.created_at)}</td>
+                    <td>
+                        <button onclick="editParent(${parent.id})" class="btn-edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function addParent(e) {
+            e.preventDefault();
+            
+            const data = {
+                name: document.getElementById('add_name').value,
+                email: document.getElementById('add_email').value,
+                phone: document.getElementById('add_phone').value,
+                username: document.getElementById('add_username').value,
+                password: document.getElementById('add_password').value
+            };
+            
+            if (!data.name || !data.email || !data.username) {
+                showMessage('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('../../api/admin/add_parent.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Parent registered successfully!', 'success');
+                    closeModal('addModal');
+                    document.getElementById('addParentForm').reset();
+                    document.getElementById('add_password').value = '1234';
+                    loadParents();
+                } else {
+                    showMessage(result.error || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Network error. Please try again.', 'error');
+            }
+        }
+
+        function editParent(id) {
+            showMessage('Edit feature coming soon!', 'info');
+        }
+
+        function showMessage(message, type) {
+            const msgBox = document.getElementById('messageBox');
+            const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle');
+            msgBox.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+            msgBox.className = `alert alert-${type}`;
+            msgBox.style.display = 'flex';
+            
+            setTimeout(() => {
+                msgBox.style.display = 'none';
+            }, 4000);
+        }
+
+        function showAddModal() {
+            document.getElementById('addParentForm').reset();
+            document.getElementById('add_password').value = '1234';
+            openModal('addModal');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '—';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+                if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
