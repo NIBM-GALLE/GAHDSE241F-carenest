@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg1"
+    android:padding="25dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="514dp"
+            android:layout_height="444dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="1dp"
+            android:src="@drawable/img_5" />
+
+
+        <TextView
+            android:layout_width="327dp"
+            android:layout_height="124dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="1dp"
+            android:text="Your Child Safety is Our Priority"
+            android:textColor="@color/dark_blue"
+            android:textSize="40dp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="21dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="1dp"
+            android:text="Train up a child in the way he should go"
+            android:textColor="@color/gray"
+            android:textSize="15dp" />
+
+        <Button
+            android:id="@+id/btn_started"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/dark_blue"
+            android:text="Get Started"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+
+    </LinearLayout>
+</ScrollView>
